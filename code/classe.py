@@ -47,9 +47,17 @@ class HMM():
         data = open(adr, 'r')
         line = data.readline()
 
-        for char in line:
-            if char == '#':
-                self.nbL = int(data.readline())
+        if line[0] == '#':
+            self.__letters_number = int(data.readline())
+
+        line = data.readline()
+        if line[0] == '#':
+            self.__states_number = int(data.readline())
+
+        for i in range (self.__letters_number):
+            self.__initial = np.array ([int(data.readline()), int(data.readline())])
+
+
 
             if column_number == n_c1:
                 if char != " " and char != column_separator and char != "\n":
