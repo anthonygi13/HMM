@@ -83,3 +83,17 @@ class HMM():
         initial_additionne = []
         for i in range (len(self.initial)):
             if i==0:
+
+
+
+    def save(self, address):
+        nfile = open(address, "w")
+        nfile.write("# The number of letters\n")
+        nfile.write(str(self.letters_number) + "\n")
+        nfile.write("# The number of states\n")
+        nfile.write(str(self.states_number) + "\n")
+        nfile.write("# The initial transitions\n")
+        for p in self.initial:
+            nfile.write(str(p) + "\n")
+        nfile.write("# The internal transitions\n")
+        for i in range len()
