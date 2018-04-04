@@ -14,3 +14,17 @@ class HMM():
         # The list of vectors defining the emissions
         self.emissions = emissions
 
+    def get_nbL(self):
+        return self.nbL
+
+    def get_nbS(self):
+        return self.nbS
+
+    def get_initial(self):
+        return self.initial
+
+    def get_transitions(self):
+        return self.transitions
+
+    def get_emissions(self):
+        return self.emissions
