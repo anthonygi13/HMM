@@ -43,43 +43,41 @@ class HMM():
 
     def load(self, adr):
         """charge l'adresse"""
-        pass
-        """
+
         data = open(adr, 'r')
         line = data.readline()
-
-        if line[0] == '#':
-            self.__letters_number = int(data.readline())
-
-        line = data.readline()
-        if line[0] == '#':
-            self.__states_number = int(data.readline())
-
-        for i in range (self.__letters_number):
-            self.__initial = np.array ([int(data.readline()), int(data.readline())])
+        c = 0
 
 
+        while c!= 5:
+            if line[0] == '#':
+                if c == 0 :
+                    self.__letters_number = int(data.readline())
 
-            if column_number == n_c1:
-                if char != " " and char != column_separator and char != "\n":
-                    c1 += char
-            if column_number == n_c2:
-                if char != " " and char != column_separator and char != "\n":
-                    c2 += char
-            if column_number > max([n_c1, n_c2]):
-                break
-        if c1 == "":
-            c1 = None
-        if c2 == "":
-            c2 = None
-        for i in range(nb):
-            if i == 2:
-                d = l.split()
-                s1 = int(d[0])  # sommet 1
+                if c == 1 :
+                    self.__states_number = int(data.readline())
 
-            l = f.readline()
+                if c == 2 :
+                    self.__initial = np.zeros((1, self.__states_number))
+                    for i in range(self.__states_number):
+                        self.__initial[0][i] = int(data.readline())
 
-        f.close()
+                if c == 3 :
+                    self.__transitions = np.zeros((self.__states_number, self.__states_number))
+                    for i in range(self.__letters_number):
+                        self.__transitions = np.array([int(data.readline()), int(data.readline())])
+
+                if c == 4 :
+                    for i in range(self.__letters_number):
+                        self.__emissions = np.array([int(data.readline()), int(data.readline())])
+
+                c += 1
+
+
+            line = data.readline()
+
+
+        data.close()
 
 
     def gen_rand(self,n):
