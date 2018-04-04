@@ -67,3 +67,7 @@ class HMM():
             l = f.readline()
 
         f.close()
+    def gen_rand(self,n):
+        initial_additionne = []
+        for i in range (len(self.initial)):
+            if i==0:
