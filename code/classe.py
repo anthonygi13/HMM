@@ -4,27 +4,34 @@ class HMM():
 
     def __init__(self, letters_number, states_number, initial, transitions, emissions):
         # The number of letters
-        self.letters_number = letters_number
+        self.__letters_number = letters_number
         # The number of states
-        self.states_number = states_number
+        self.__states_number = states_number
         # The vector defining the initial weights
-        self.initial = initial
+        self.__initial = initial
         # The array defining the transitions
-        self.transitions = transitions
+        self.__transitions = transitions
         # The list of vectors defining the emissions
-        self.emissions = emissions
+        self.__emissions = emissions
 
-    def get_letters_number(self):
-        return self.letters_number
+    @property
+    def letters_number(self):
+        return self.__letters_number
 
-    def get_states_number(self):
-        return self.states_number
+    @property
+    def states_number(self):
+        return self.__states_number
 
-    def get_initial(self):
-        return self.initial
+    @property
+    def initial(self):
+        return self.__initial
 
-    def get_transitions(self):
-        return self.transitions
+    @property
+    def transitions(self):
+        return self.__transitions
 
-    def get_emissions(self):
-        return self.emissions
+    @property
+    def emissions(self):
+        return self.__emissions
+    
+
