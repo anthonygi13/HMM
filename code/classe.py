@@ -35,3 +35,35 @@ class HMM():
         return self.__emissions
     
 
+
+    def load(self, adr):
+        """charge l'adresse"""
+
+        data = open(adr, 'r')
+        line = data.readline()
+
+        for char in line:
+            if char == '#':
+                data.readline()
+                self.nbL =
+
+            if column_number == n_c1:
+                if char != " " and char != column_separator and char != "\n":
+                    c1 += char
+            if column_number == n_c2:
+                if char != " " and char != column_separator and char != "\n":
+                    c2 += char
+            if column_number > max([n_c1, n_c2]):
+                break
+        if c1 == "":
+            c1 = None
+        if c2 == "":
+            c2 = None
+        for i in range(nb):
+            if i == 2:
+                d = l.split()
+                s1 = int(d[0])  # sommet 1
+
+            l = f.readline()
+
+        f.close()
