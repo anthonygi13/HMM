@@ -1,3 +1,9 @@
+######################
+# Fichier class HMM  #
+# 04/04/18           #
+######################
+
+from numpy import *
 
 class HMM():
     """ Define an HMM"""
@@ -35,7 +41,6 @@ class HMM():
         return self.__emissions
     
 
-
     def load(self, adr):
         """charge l'adresse"""
 
@@ -44,8 +49,7 @@ class HMM():
 
         for char in line:
             if char == '#':
-                data.readline()
-                self.nbL =
+                self.nbL = int(data.readline())
 
             if column_number == n_c1:
                 if char != " " and char != column_separator and char != "\n":
