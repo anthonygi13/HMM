@@ -1,0 +1,13 @@
+# The number of letters
+2
+# The number of states
+2
+# The initial transitions
+0.5
+0.5
+# The internal transitions
+1 1 
+1 1 
+# The emissions
+1 1 
+1 1 

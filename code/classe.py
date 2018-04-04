@@ -3,7 +3,7 @@
 # 04/04/18           #
 ######################
 
-from numpy import *
+import numpy as np
 
 class HMM():
     """ Define an HMM"""
@@ -43,7 +43,8 @@ class HMM():
 
     def load(self, adr):
         """charge l'adresse"""
-
+        pass
+        """
         data = open(adr, 'r')
         line = data.readline()
 
@@ -79,14 +80,15 @@ class HMM():
             l = f.readline()
 
         f.close()
-    def gen_rand(self,n):
+        """
+    """def gen_rand(self,n):
         initial_additionne = []
         for i in range (len(self.initial)):
             if i==0:
-
-
+     """
 
     def save(self, address):
+        #faire en sorte que ça écrase bien avant d ecrire
         nfile = open(address, "w")
         nfile.write("# The number of letters\n")
         nfile.write(str(self.letters_number) + "\n")
@@ -96,4 +98,18 @@ class HMM():
         for p in self.initial:
             nfile.write(str(p) + "\n")
         nfile.write("# The internal transitions\n")
-        for i in range len()
+        for i in range(len(self.transitions)):
+            for j in range(len(self.transitions[0])):
+                nfile.write(str(self.transitions[i, j]) + " ")
+            nfile.write("\n")
+        nfile.write("# The emissions" + "\n")
+        for i in range(len(self.emissions)):
+            for j in range(len(self.emissions[0])):
+                nfile.write(str(self.emissions[i, j]) + " ")
+            nfile.write("\n")
+
+        nfile.close()
+
+hmm = HMM(2, 2, np.array([0.5, 0.5]), np.array([[1, 1], [1, 1]]), np.array([[1, 1], [1, 1]]))
+
+hmm.save("test.txt")
