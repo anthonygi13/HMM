@@ -4,6 +4,7 @@
 ######################
 
 import numpy as np
+import random
 
 class HMM():
     """ Define an HMM"""
@@ -73,6 +74,8 @@ class HMM():
 
                 c += 1
 
+        f.close()
+"""
 
             line = data.readline()
 
@@ -81,10 +84,41 @@ class HMM():
 
 
     def gen_rand(self,n):
-        initial_additionne = np.zeros(1, n)
-        for i in range (len(self.initial)):
+        initial_additionne = np.zeros(len(self.initial[0]), 1)
+        for i in range (len(self.initial[0])):
             if i==0:
-     """
+                initial_additionne[0,0] =  self.initial[0,0]
+            else:
+                initial_additionne[i,0] = self.initial[i,0] + self.initial[i - 1, 0]
+
+        transition_additionne = np.zeros(len(self.transitions), len(self.transitions[0]))
+        for i in range(len(self.transitions)):
+            for j in range(len(self.transitions[0])):
+                if j == 0:
+                    transition_additionne[i,0] = self.transitions[i,0]
+                else:
+                    transition_additionne[i,j] = self.transitions[i,j] + self.transitions[i, j-1]
+
+        emissions_additionne = np.zeros(len(self.emissions), len(self.emissions[0]))
+        for i in range(len(self.emissions)):
+            for j in range(len(self.emissions[0])):
+                if j == 0:
+                    emissions_additionne[i,0] = self.emissions[i,0]
+                else:
+                    emissions_additionne[i,j] = self.emissions[i,j] + self.emissions[i, j-1]
+
+        nb = random.random()
+        p_initial = 0
+        p_transition = 0
+        p_emission = 0
+        var = 0
+        for i in range (len(self.initial[0])):
+
+
+
+
+
+
 
     def save(self, address):
         #faire en sorte que ça écrase bien avant d ecrire
@@ -112,5 +146,3 @@ class HMM():
 hmm = HMM(2, 2, np.array([0.5, 0.5]), np.array([[1, 1], [1, 1]]), np.array([[1, 1], [1, 1]]))
 
 hmm.save("test.txt")
-
-np.array
