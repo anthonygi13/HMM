@@ -2,11 +2,11 @@
 class HMM():
     """ Define an HMM"""
 
-    def __init__(self, nbL, nbS, initial, transitions, emissions):
+    def __init__(self, letters_number, states_number, initial, transitions, emissions):
         # The number of letters
-        self.nbL = nbL
+        self.letters_number = letters_number
         # The number of states
-        self.nbS = nbS
+        self.states_number = states_number
         # The vector defining the initial weights
         self.initial = initial
         # The array defining the transitions
