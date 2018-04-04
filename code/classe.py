@@ -1,3 +1,9 @@
+######################
+# Fichier class HMM  #
+# 04/04/18           #
+######################
+
+from numpy import *
 
 class HMM():
     """ Define an HMM"""
@@ -35,17 +41,23 @@ class HMM():
         return self.__emissions
     
 
-
     def load(self, adr):
         """charge l'adresse"""
 
         data = open(adr, 'r')
         line = data.readline()
 
-        for char in line:
-            if char == '#':
-                data.readline()
-                self.nbL =
+        if line[0] == '#':
+            self.__letters_number = int(data.readline())
+
+        line = data.readline()
+        if line[0] == '#':
+            self.__states_number = int(data.readline())
+
+        for i in range (self.__letters_number):
+            self.__initial = np.array ([int(data.readline()), int(data.readline())])
+
+
 
             if column_number == n_c1:
                 if char != " " and char != column_separator and char != "\n":
