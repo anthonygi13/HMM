@@ -80,9 +80,10 @@ class HMM():
             l = f.readline()
 
         f.close()
-        """
-    """def gen_rand(self,n):
-        initial_additionne = []
+
+
+    def gen_rand(self,n):
+        initial_additionne = np.zeros(1, n)
         for i in range (len(self.initial)):
             if i==0:
      """
@@ -113,3 +114,5 @@ class HMM():
 hmm = HMM(2, 2, np.array([0.5, 0.5]), np.array([[1, 1], [1, 1]]), np.array([[1, 1], [1, 1]]))
 
 hmm.save("test.txt")
+
+np.array
