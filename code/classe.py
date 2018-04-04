@@ -81,10 +81,10 @@ class HMM():
 
 
         data.close()
-
+"""
 
     def gen_rand(self,n):
-        initial_additionne = np.zeros(len(self.initial[0]), 1)
+        initial_additionne = np.zeros(len(self.initial), 1)
         for i in range (len(self.initial[0])):
             if i==0:
                 initial_additionne[0,0] =  self.initial[0,0]
@@ -108,18 +108,32 @@ class HMM():
                     emissions_additionne[i,j] = self.emissions[i,j] + self.emissions[i, j-1]
 
         nb = random.random()
-        p_initial = 0
-        p_transition = 0
-        p_emission = 0
-        var = 0
-        for i in range (len(self.initial[0])):
+        for i in range (len(self.initial)):
+            p_initial = initial_additionne[i,1]
+            if p_initial >= nb:
+                val_initial = i
+            break
+        val_etat = val_initial
+        res = self.__lettres_numbers[val_initial]
+        for var in range (n):
+            for j in range(len(self.transitions[0])):
+                p_transition = transition_additionne[val_etat, j]
+                if p_transition >= nb:
+                    val_transition = j
+                break
+            for k in range(len(self.emissions[0])):
+                p_emission = emissions_additionne[val_etat, k]
+                if p_emission >= nb:
+                    val_emission = k
+                break
+            res += self.__lettres_numbers[val_emission]
+            val_etat = val_transition
+        return res
 
 
 
 
-
-
-
+"""
     def save(self, address):
         #faire en sorte que ça écrase bien avant d ecrire
         nfile = open(address, "w")
