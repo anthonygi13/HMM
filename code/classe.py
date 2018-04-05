@@ -102,6 +102,7 @@ class HMM():
         self.check_initial(values)
         self.__inital = values
 
+           def check_tran'''
 
     def check_initial(self,values):
         if not isinstance(values, np.ndarray):
@@ -254,6 +255,7 @@ hmm.save("test1.txt")
 
 HMM = HMM('test1.txt')
 HMM.affiche()'''
+
 hmm1=HMM()
-hmm1.load('test1.txt')
+hmm1.load('test2.txt')
 print(hmm1)

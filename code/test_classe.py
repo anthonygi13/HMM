@@ -5,6 +5,7 @@
 ###########################
 
 from classe import *
+import numpy as np
 
 import unittest
 
@@ -17,15 +18,27 @@ class TestHMM(unittest.TestCase):
         self.hmm3 = HMM('test3.txt')  # attention , lui somme != 0
 
     def test_Error1(self):
-        self.assertTrue(self.hmm2.load())
+        self.assertRaises(AssertionError, HMM, 'test3.txt.txt')
 
-    def test_Error2(self):
-        self.assertTrue(self.hmm3.load())
+    def test_load(self):
+        self.assertTrue(self.hmm1.letters_number == 2)
+        self.assertTrue(self.hmm1.states_number == 2)
+        self.assertTrue(self.hmm1.initial == np.array([0.5 , 0.5]))
+        self.assertTrue(self.hmm1.transitions == np.array([0.9, 0.1], [0.1, 0,9]))
+        self.assertTrue(self.hmm1.emissions == np.array([0.5, 0.5], [0.7, 0, 3]))
 
+    def test_load1(self):
+        self.assertTrue(self.hmm1.letters_number == 2)
+        self.assertTrue(self.hmm1.states_number == 3)
+        self.assertTrue(self.hmm1.initial == np.array([ 0.5 , 0.2 , 0.3]))
+        self.assertTrue(self.hmm1.transitions == np.array([ 0.8,  0.1 , 0.1], [ 0.8 , 0.9 , 0.1], [ 0,   0,   0 ]))
+        self.assertTrue(self.hmm1.emissions == np.array([ 0.3 , 0.3 , 0.4], [ 0.6 , 0.3 , 0.1], [ 0 ,  0,   0 ]))
 
 
 if __name__ == "__main__":
     unittest.main()
+
+
 
 '''
     def testError2(self):
@@ -58,4 +71,4 @@ if __name__ == "__main__":
 
     def testElimFM6(self):
         self.assertTrue(self.i6.elimFM())
-        '''
+'''
