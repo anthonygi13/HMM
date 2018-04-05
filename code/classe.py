@@ -54,6 +54,7 @@ class HMM():
                 raise ValueError("La somme des probabilités doit être égale à 1")
 
 
+
     @property
     def letters_number(self):
         return self.__letters_number
@@ -83,26 +84,11 @@ class HMM():
         return self.__states_number
 
 
-    @letters_number.setter
-    def set_letters_number(self, value):
-        if type(value) == int and value >= 0 :
-            self.__letters_number = value
-        else :
-            raise ValueError("Le nombre de lettre doit être un entier positif")
-
-    @states_number.setter
-    def set_states_number(self, value):
-        if type(value) == int and value >= 0 :
-            self.__states_number = value
-        else :
-            raise ValueError("Le nombre d'états doit être un entier positif")
-
     @initial.setter
     def set_initial(self, values):
         self.check_initial(values)
         self.__inital = values
 
-           def check_tran'''
 
     def check_initial(self,values):
         if not isinstance(values, np.ndarray):
@@ -117,6 +103,7 @@ class HMM():
 
             if not np.isclose([somme], [1]):
                 raise ValueError ("La somme des probabilités doit être égale à 1")
+
 
 
 
