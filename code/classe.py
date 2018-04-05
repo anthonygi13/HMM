@@ -138,27 +138,29 @@ class HMM():
                 if hash_count == 2 :
                     initial = np.zeros((states_number))
                     for i in range(states_number):
-                        initial[0][i] = float(data.readline())
+                        initial[i] = float(data.readline())
 
                 if hash_count == 3 :
                     transitions = np.zeros((states_number, states_number))
                     for i in range(letters_number):
                         ligne = data.readline().split()
                         for j in range (len(ligne)):
-                            transitions[i][j] = float(ligne[j])
+                            transitions[i, j] = float(ligne[j])
 
                 if hash_count == 4 :
                     emissions = np.zeros((states_number, states_number))
                     for i in range(letters_number):
                         ligne = data.readline().split()
                         for j in range(len(ligne)):
-                            emissions[i][j] = float(ligne[j])
+                            emissions[i, j] = float(ligne[j])
 
                 hash_count += 1
 
             line = data.readline()
 
         data.close()
+
+        return HMM(letters_number, states_number, initial, transitions, emissions)
 
 
     def __str__(self):
@@ -243,6 +245,7 @@ hmm.save("test1.txt")
 HMM = HMM('test1.txt')
 HMM.affiche()'''
 
-hmm1=HMM()
-hmm1.load('test2.txt')
+hmm1=HMM.load('test2.txt')
+
+
 print(hmm1)
