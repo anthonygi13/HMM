@@ -1,5 +1,5 @@
 ######################
-# Fichier class HMM  #
+# Fichier classe.py  #
 # 04/04/18           #
 ######################
 
@@ -9,7 +9,10 @@ import random
 class HMM():
     """ Define an HMM"""
 
-    def __init__(self, letters_number=None, states_number=None, initial=None, transitions=None, emissions=None):
+    #mettre des raise...
+    #faire des setter
+
+    def __init__(self, letters_number, states_number, initial, transitions, emissions):
         # The number of letters
         self.__letters_number = letters_number
         # The number of states
@@ -146,7 +149,6 @@ class HMM():
 
 """
     def save(self, address):
-        #faire en sorte que ça écrase bien avant d ecrire
         nfile = open(address, "w")
         nfile.write("# The number of letters\n")
         nfile.write(str(self.letters_number) + "\n")
@@ -171,7 +173,3 @@ class HMM():
 hmm = HMM(2, 2, np.array([0.5, 0.5]), np.array([[1, 1], [1, 1]]), np.array([[1, 1], [1, 1]]))
 
 hmm.save("test.txt")"""
-
-HMM = HMM()
-HMM.load('test.txt')
-HMM.affiche()
