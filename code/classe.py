@@ -43,10 +43,14 @@ class HMM():
     @property
     def emissions(self):
         return self.__emissions
-<<<<<<< Updated upstream
-    
-    @staticmethod
-=======
+
+    @letters_number.getter
+    def get_letters_number(self):
+        return self.__letters_number
+
+    @states_number.getter
+    def get_letters_number(self):
+        return self.__states_number
 
 
     """"
@@ -57,7 +61,7 @@ class HMM():
     """
 
 
->>>>>>> Stashed changes
+
     def load(self, adr):
         """charge l'adresse"""
 
