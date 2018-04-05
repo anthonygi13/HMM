@@ -27,31 +27,7 @@ class HMM():
         self.__emissions = emissions
 
 
-    def check_transition(self, value):
-        assert len(value) > 0
-        if len(value) != self.__states_number or len(value[0]) != self.__states_number:
-            raise ValueError("Le tableau est de mauvaises dimensions")
-        for i in range (len(value)):
-            somme = 0
-            for j in range (len(value[0])):
-                if value [i,j] < 0:
-                    raise ValueError("Toutes les probabilités doivent être positives")
-                somme += value[i, j]
-            if not np.isclose([somme], [1]):
-                raise ValueError("La somme des probabilités doit être égale à 1")
 
-    def check_emissions(self, value):
-        assert len(value) > 0
-        if len(value) != self.__states_number or len(value[0]) != self.__letters_number:
-            raise ValueError("Le tableau est de mauvaises dimensions")
-        for i in range(len(value)):
-            somme = 0
-            for j in range(len(value[0])):
-                if value[i, j] < 0:
-                    raise ValueError("Toutes les probabilités doivent être positives")
-                somme += value[i, j]
-            if not np.isclose([somme], [1]):
-                raise ValueError("La somme des probabilités doit être égale à 1")
 
 
 
@@ -104,7 +80,36 @@ class HMM():
             if not np.isclose([somme], [1]):
                 raise ValueError ("La somme des probabilités doit être égale à 1")
 
+    def check_transition(self, value):
+        self.verif_tableau(value, self.__states_number, self.__states_number)
 
+    def check_emissions(self, value):
+        self.verif_tableau(value, self.__states_number, self.__letters_number)
+
+    def verif_tableau(self, tableau, nb_lignes, nb_colonnes):
+
+        assert len(tableau) != 0
+        if len(tableau) != nb_lignes or len(tableau[0]) != nb_colonnes:
+            raise ValueError("Le tableau est de mauvaises dimensions")
+
+        for i in range(len(tableau)):
+            somme = 0
+            for j in range(len(tableau[0])):
+                if tableau[i, j] < 0:
+                    raise ValueError("Toutes les probabilités doivent être positives")
+                somme += tableau[i, j]
+            if not np.isclose([somme], [1]):
+                raise ValueError("La somme des probabilités doit être égale à 1")
+
+    @transitions.setter
+    def set_transitions(self, value):
+        self.check_transition(value)
+        self.__transitions = value
+
+    @emissions.setter
+    def set_emmissions(self, value):
+        self.check_emissions(value)
+        self.__emissions = value
 
 
 
