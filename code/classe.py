@@ -132,7 +132,7 @@ class HMM():
         hash_count = 0
 
 
-        while hash_count!= 5:
+        while hash_count <= 4:
             if line[0] == '#':
                 if hash_count == 0 :
                     letters_number = int(data.readline())
@@ -173,7 +173,7 @@ class HMM():
 
 
 
-    def gen_rand(self,n):
+    def generate_random(self,n):
         #long
         initial_additionne = np.zeros(len(self.initial))
         for i in range (len(self.initial)):
