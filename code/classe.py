@@ -142,14 +142,14 @@ class HMM():
 
                 if hash_count == 3 :
                     transitions = np.zeros((states_number, states_number))
-                    for i in range(letters_number):
+                    for i in range(states_number):
                         ligne = data.readline().split()
                         for j in range (len(ligne)):
                             transitions[i, j] = float(ligne[j])
 
                 if hash_count == 4 :
-                    emissions = np.zeros((states_number, states_number))
-                    for i in range(letters_number):
+                    emissions = np.zeros((states_number, letters_number))
+                    for i in range(states_number):
                         ligne = data.readline().split()
                         for j in range(len(ligne)):
                             emissions[i, j] = float(ligne[j])
