@@ -6,8 +6,9 @@
 
 import numpy as np
 import random
+import time
 
-class HMM():
+class HMM:
     """ Define an HMM"""
 
     #mettre des raise...
@@ -25,11 +26,6 @@ class HMM():
         self.__transitions = transitions
         # The list of vectors defining the emissions
         self.__emissions = emissions
-
-
-
-
-
 
     @property
     def letters_number(self):
@@ -51,55 +47,59 @@ class HMM():
     def emissions(self):
         return self.__emissions
 
-    @letters_number.getter
-    def get_letters_number(self):
-        return self.__letters_number
-
-    @states_number.getter
-    def get_letters_number(self):
-        return self.__states_number
-
-
     @initial.setter
     def initial(self, values):
         self.check_initial(values)
         self.__inital = values
 
+    @staticmethod
+    def check_initial(value):
+        HMM.check_probability_array(value)
+        if value.ndim != 1:
+            raise ValueError("The parameter value should be a one dimension array")
 
-    def check_initial(self,values):
-        if not isinstance(values, np.ndarray):
-            raise ValueError("Le vecteur initial doit être un vecteur")
 
-        else :
-            somme = 0
-            for i in range (len(values)):
-                if values[i] < 0:
-                    raise ValueError ("Toutes les probabilités doivent être positives")
-                somme += values[i]
+    @staticmethod
+    def check_probability_array(array):
 
-            if not np.isclose([somme], [1]):
-                raise ValueError ("La somme des probabilités doit être égale à 1")
+        if not isinstance(array, np.ndarray):
+            raise ValueError("The parameter array should be a np.ndarray")
+
+        if array.ndim == 1:
+            sum = 0
+            for value in array:
+                if value < 0:
+                    raise ValueError("The probabilities should be positive numbers")
+                sum += value
+
+            if not np.isclose([sum], [1]):
+                raise ValueError("The probabilities sum should be equal to 1 for each lign")
+
+        elif array.ndim == 2:
+            for i in range(array.shape[0]):
+                sum = 0
+                for j in range(array.shape[1]):
+                    if array[i, j] < 0:
+                        raise ValueError("The probabilities should be positive numbers")
+                    sum += array[i, j]
+                if not np.isclose([sum], [1]):
+                    raise ValueError("The probabilities sum should be equal to 1 for each lign")
+
+        else:
+            raise ValueError("The dimension of the parameter array should be 1 or 2")
 
     def check_transition(self, value):
-        self.verif_tableau(value, self.__states_number, self.__states_number)
+        self.check_dim(value, self.states_number, self.states_number)
 
     def check_emissions(self, value):
-        self.verif_tableau(value, self.__states_number, self.__letters_number)
+        self.check_dim(value, self.states_number, self.letters_number)
 
-    def verif_tableau(self, tableau, nb_lignes, nb_colonnes):
-
-        assert len(tableau) != 0
-        if len(tableau) != nb_lignes or len(tableau[0]) != nb_colonnes:
+    @staticmethod
+    def check_dim(tableau, nb_lignes, nb_colonnes):
+        if tableau.ndim != 2:
+            raise ValueError("The parameter tableau should be a 2D array")
+        if tableau.shape[0] != nb_lignes or tableau.shape[1] != nb_colonnes:
             raise ValueError("Le tableau est de mauvaises dimensions")
-
-        for i in range(len(tableau)):
-            somme = 0
-            for j in range(len(tableau[0])):
-                if tableau[i, j] < 0:
-                    raise ValueError("Toutes les probabilités doivent être positives")
-                somme += tableau[i, j]
-            if not np.isclose([somme], [1]):
-                raise ValueError("La somme des probabilités doit être égale à 1")
 
     @transitions.setter
     def transitions(self, value):
@@ -110,18 +110,6 @@ class HMM():
     def emissions(self, value):
         self.check_emissions(value)
         self.__emissions = value
-
-
-
-
-
-    """"
-    @transitions.setter
-    def transitions(self, values):
-        values = self.check_transitions(values, self.__states_number)
-        self.__transitions = values
-    """
-
 
     @staticmethod
     def load(adr):
@@ -171,55 +159,27 @@ class HMM():
     def __str__(self):
         return 'The number of letters : ' +  str(self.__letters_number) +'\n' +  ' The number of states : '+ str(self.__states_number) +'\n'+ ' The initial vector : ' +  str(self.__initial) +'\n'+  ' The internal transitions : ' +'\n'+ str(self.__transitions) +'\n'+ ' The emissions : ' +'\n'+ str(self.__emissions)
 
+    @staticmethod
+    def draw_multinomial(array):
+        if array.ndim != 1:
+            raise ValueError("The parameter array should be a 1D array")
+        HMM.check_probability_array(array)
 
+        random.seed(time.clock())
+        random_number = random.random()
+        probability_sum = 0
+        for i, probability in enumerate(list):
+            probability_sum += probability
+            if random_number <= probability_sum:
+                return i
+        return array.shape[1] - 1
 
-    def generate_random(self,n):
-        #long
-        initial_additionne = np.zeros(len(self.initial))
-        for i in range (len(self.initial)):
-            if i==0:
-                initial_additionne[0] =  self.initial[0]
-            else:
-                initial_additionne[i] = self.initial[i] + self.initial[i - 1]
-
-        transition_additionne = np.zeros(len(self.transitions), len(self.transitions[0]))
-        for i in range(len(self.transitions)):
-            for j in range(len(self.transitions[0])):
-                if j == 0:
-                    transition_additionne[i, 0] = self.transitions[i, 0]
-                else:
-                    transition_additionne[i, j] = self.transitions[i, j] + self.transitions[i, j-1]
-
-        emissions_additionne = np.zeros(len(self.emissions), len(self.emissions[0]))
-        for i in range(len(self.emissions)):
-            for j in range(len(self.emissions[0])):
-                if j == 0:
-                    emissions_additionne[i, 0] = self.emissions[i, 0]
-                else:
-                    emissions_additionne[i, j] = self.emissions[i, j] + self.emissions[i, j-1]
-
-        nb = random.random()
-        for i in range (len(self.initial)):
-            p_initial = initial_additionne[i]
-            if p_initial >= nb:
-                val_initial = i
-                break
-        val_etat = val_initial
-        res = self.letters_number[val_initial]
-        for var in range(n):
-            for j in range(len(self.transitions[0])):
-                p_transition = transition_additionne[val_etat, j]
-                if p_transition >= nb:
-                    val_transition = j
-                break
-            for k in range(len(self.emissions[0])):
-                p_emission = emissions_additionne[val_etat, k]
-                if p_emission >= nb:
-                    val_emission = k
-                break
-            res += self.letters_number[val_emission]
-            val_etat = val_transition
-        return res
+    def generate_random(self, n):
+        sequence = np.zeros(n)
+        actual_state = self.draw_multinomial(self.initial)
+        for i in range(n):
+            sequence[i] = self.draw_multinomial(self.emissions[actual_state])
+            actual_state = self.draw_multinomial(self.transitions[actual_state])
 
     def save(self, address):
         nfile = open(address, "w")
@@ -243,16 +203,16 @@ class HMM():
 
         nfile.close()
 
-    def __eq__(self, hmm2): #le = entre hmm mais faut faire le = entre initial, transitions et emissions
-        if self.__letters_number != hmm2.__letters_number:
+    def __eq__(self, hmm2):
+        if self.letters_number != hmm2.letters_number:
             return False
-        if self.__states_number != hmm2.__states_number:
+        if self.states_number != hmm2.states_number:
             return False
-        if self.__inital != hmm2.__initial:
+        if not np.isclose(self.initial,hmm2.initial):
             return False
-        if self.__transitions != hmm2.__transitions:
+        if not np.isclose(self.transitions, hmm2.transitions):
             return False
-        if self.__emissions != hmm2.__emissions:
+        if not np.isclose(self.emissions, hmm2.emissions):
             return False
         return True
 
@@ -264,7 +224,6 @@ hmm.save("test1.txt")
 HMM = HMM('test1.txt')
 HMM.affiche()'''
 
-hmm1=HMM.load('test2.txt')
+#hmm1=HMM.load('test2.txt')
 
-
-print(hmm1)
+#print(hmm1)
