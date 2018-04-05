@@ -14,7 +14,7 @@ class HMM():
     #faire des setter
 
     #virer les Nones
-    def __init__(self, letters_number=None, states_number=None, initial=None, transitions=None, emissions=None):
+    def __init__(self, letters_number, states_number, initial, transitions, emissions):
         # The number of letters
         self.__letters_number = letters_number
         # The number of states
@@ -78,47 +78,45 @@ class HMM():
     """
 
 
-
-    def load(self, adr):
+    @staticmethod
+    def load(adr):
         """charge l'adresse"""
 
         data = open(adr, 'r')
         line = data.readline()
-        c = 0 #donner des noms pas ambigus aux variables
+        hash_count = 0
 
 
-        while c!= 5:
+        while hash_count!= 5:
             if line[0] == '#':
-                if c == 0 :
-                    self.__letters_number = int(data.readline())
+                if hash_count == 0 :
+                    letters_number = int(data.readline())
 
-                if c == 1 :
-                    self.__states_number = int(data.readline())
+                if hash_count == 1 :
+                    states_number = int(data.readline())
 
-                if c == 2 :
-                    self.__initial = np.zeros((1, self.__states_number))
-                    for i in range(self.__states_number):
-                        self.__initial[0][i] = float(data.readline())
+                if hash_count == 2 :
+                    initial = np.zeros((states_number))
+                    for i in range(states_number):
+                        initial[0][i] = float(data.readline())
 
-                if c == 3 :
-                    self.__transitions = np.zeros((self.__states_number, self.__states_number))
-                    for i in range(self.__letters_number):
+                if hash_count == 3 :
+                    transitions = np.zeros((states_number, states_number))
+                    for i in range(letters_number):
                         ligne = data.readline().split()
                         for j in range (len(ligne)):
-                            self.__transitions[i][j] = float(ligne[j])
+                            transitions[i][j] = float(ligne[j])
 
-                if c == 4 :
-                    self.__emissions = np.zeros((self.__states_number, self.__states_number))
-                    for i in range(self.__letters_number):
+                if hash_count == 4 :
+                    emissions = np.zeros((states_number, states_number))
+                    for i in range(letters_number):
                         ligne = data.readline().split()
                         for j in range(len(ligne)):
-                            self.__emissions[i][j] = float(ligne[j])
+                            emissions[i][j] = float(ligne[j])
 
-                c += 1
-
+                hash_count += 1
 
             line = data.readline()
-
 
         data.close()
 
@@ -130,37 +128,37 @@ class HMM():
 
     def gen_rand(self,n):
         #long
-        initial_additionne = np.zeros(len(self.initial), 1)
-        for i in range (len(self.initial[0])):
+        initial_additionne = np.zeros(len(self.initial))
+        for i in range (len(self.initial)):
             if i==0:
-                initial_additionne[0,0] =  self.initial[0,0]
+                initial_additionne[0] =  self.initial[0]
             else:
-                initial_additionne[i,0] = self.initial[i,0] + self.initial[i - 1, 0]
+                initial_additionne[i] = self.initial[i] + self.initial[i - 1]
 
         transition_additionne = np.zeros(len(self.transitions), len(self.transitions[0]))
         for i in range(len(self.transitions)):
             for j in range(len(self.transitions[0])):
                 if j == 0:
-                    transition_additionne[i,0] = self.transitions[i,0]
+                    transition_additionne[i, 0] = self.transitions[i, 0]
                 else:
-                    transition_additionne[i,j] = self.transitions[i,j] + self.transitions[i, j-1]
+                    transition_additionne[i, j] = self.transitions[i, j] + self.transitions[i, j-1]
 
         emissions_additionne = np.zeros(len(self.emissions), len(self.emissions[0]))
         for i in range(len(self.emissions)):
             for j in range(len(self.emissions[0])):
                 if j == 0:
-                    emissions_additionne[i,0] = self.emissions[i,0]
+                    emissions_additionne[i, 0] = self.emissions[i, 0]
                 else:
-                    emissions_additionne[i,j] = self.emissions[i,j] + self.emissions[i, j-1]
+                    emissions_additionne[i, j] = self.emissions[i, j] + self.emissions[i, j-1]
 
         nb = random.random()
         for i in range (len(self.initial)):
-            p_initial = initial_additionne[i,1]
+            p_initial = initial_additionne[i]
             if p_initial >= nb:
                 val_initial = i
-            break
+                break
         val_etat = val_initial
-        res = self.__letters_number[val_initial]
+        res = self.letters_number[val_initial]
         for var in range (n):
             for j in range(len(self.transitions[0])):
                 p_transition = transition_additionne[val_etat, j]
@@ -172,7 +170,7 @@ class HMM():
                 if p_emission >= nb:
                     val_emission = k
                 break
-            res += self.__letters_number[val_emission]
+            res += self.letters_number[val_emission]
             val_etat = val_transition
         return res
 
