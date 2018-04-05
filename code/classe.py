@@ -43,8 +43,21 @@ class HMM():
     @property
     def emissions(self):
         return self.__emissions
+<<<<<<< Updated upstream
     
     @staticmethod
+=======
+
+
+    """"
+    @transitions.setter
+    def transitions(self, values):
+        values = self.check_transitions(values, self.__states_number)
+        self.__transitions = values
+    """
+
+
+>>>>>>> Stashed changes
     def load(self, adr):
         """charge l'adresse"""
 
@@ -147,7 +160,7 @@ class HMM():
 
 
 
-"""
+
     def save(self, address):
         nfile = open(address, "w")
         nfile.write("# The number of letters\n")
