@@ -27,6 +27,33 @@ class HMM():
         self.__emissions = emissions
 
 
+    def check_transition(self, value):
+        assert len(value) > 0
+        if len(value) != self.__states_number or len(value[0]) != self.__states_number:
+            raise ValueError("Le tableau est de mauvaises dimensions")
+        for i in range (len(value)):
+            somme = 0
+            for j in range (len(value[0])):
+                if value [i,j] < 0:
+                    raise ValueError("Toutes les probabilités doivent être positives")
+                somme += value[i, j]
+            if not np.isclose([somme], [1]):
+                raise ValueError("La somme des probabilités doit être égale à 1")
+
+    def check_emissions(self, value):
+        assert len(value) > 0
+        if len(value) != self.__states_number or len(value[0]) != self.__letters_number:
+            raise ValueError("Le tableau est de mauvaises dimensions")
+        for i in range(len(value)):
+            somme = 0
+            for j in range(len(value[0])):
+                if value[i, j] < 0:
+                    raise ValueError("Toutes les probabilités doivent être positives")
+                somme += value[i, j]
+            if not np.isclose([somme], [1]):
+                raise ValueError("La somme des probabilités doit être égale à 1")
+
+
     @property
     def letters_number(self):
         return self.__letters_number
