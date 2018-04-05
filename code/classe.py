@@ -9,7 +9,7 @@ import random
 class HMM():
     """ Define an HMM"""
 
-    def __init__(self, letters_number, states_number, initial, transitions, emissions):
+    def __init__(self, letters_number=None, states_number=None, initial=None, transitions=None, emissions=None):
         # The number of letters
         self.__letters_number = letters_number
         # The number of states
@@ -61,27 +61,38 @@ class HMM():
                 if c == 2 :
                     self.__initial = np.zeros((1, self.__states_number))
                     for i in range(self.__states_number):
-                        self.__initial[0][i] = int(data.readline())
+                        self.__initial[0][i] = float(data.readline())
 
                 if c == 3 :
                     self.__transitions = np.zeros((self.__states_number, self.__states_number))
                     for i in range(self.__letters_number):
-                        self.__transitions = np.array([int(data.readline()), int(data.readline())])
+                        ligne = data.readline().split()
+                        for j in range (len(ligne)):
+                            self.__transitions[i][j] = float(ligne[j])
 
                 if c == 4 :
+                    self.__emissions = np.zeros((self.__states_number, self.__states_number))
                     for i in range(self.__letters_number):
-                        self.__emissions = np.array([int(data.readline()), int(data.readline())])
+                        ligne = data.readline().split()
+                        for j in range(len(ligne)):
+                            self.__emissions[i][j] = float(ligne[j])
 
                 c += 1
 
-        f.close()
-"""
 
             line = data.readline()
 
 
         data.close()
-"""
+
+    def affiche(self):
+        print('The number of letters : ', self.__letters_number)
+        print('The number of states : ', self.__states_number)
+        print('The initial transitions : ', self.__initial)
+        print('The internal transitions : ', self.__transitions)
+        print('The emissions : ', self.__emissions)
+
+
 
     def gen_rand(self,n):
         initial_additionne = np.zeros(len(self.initial), 1)
@@ -159,4 +170,8 @@ class HMM():
 
 hmm = HMM(2, 2, np.array([0.5, 0.5]), np.array([[1, 1], [1, 1]]), np.array([[1, 1], [1, 1]]))
 
-hmm.save("test.txt")
+hmm.save("test.txt")"""
+
+HMM = HMM()
+HMM.load('test.txt')
+HMM.affiche()
