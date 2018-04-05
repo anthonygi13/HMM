@@ -13,6 +13,7 @@ class HMM():
     #mettre des raise...
     #faire des setter
 
+    #virer les Nones
     def __init__(self, letters_number=None, states_number=None, initial=None, transitions=None, emissions=None):
         # The number of letters
         self.__letters_number = letters_number
@@ -24,6 +25,17 @@ class HMM():
         self.__transitions = transitions
         # The list of vectors defining the emissions
         self.__emissions = emissions
+
+    def check_initial(self,values):
+        somme = 0
+        for i in range (len(self.initial)):
+            if self.initial[i] < 0:
+                raise ValueError ("Toutes les probabilités doivent être positives")
+            somme += self.initial[i]
+        if not isclose(somme,1):
+            raise ValueError ("La somme des probabilités doit être égale à 1")
+
+    def check_tran
 
     @property
     def letters_number(self):
@@ -53,6 +65,10 @@ class HMM():
     def get_letters_number(self):
         return self.__states_number
 
+    @initial.setter
+    def initial(self,valeur):
+
+
 
     """"
     @transitions.setter
@@ -68,7 +84,7 @@ class HMM():
 
         data = open(adr, 'r')
         line = data.readline()
-        c = 0
+        c = 0 #donner des noms pas ambigus aux variables
 
 
         while c!= 5:
@@ -113,6 +129,7 @@ class HMM():
 
 
     def gen_rand(self,n):
+        #long
         initial_additionne = np.zeros(len(self.initial), 1)
         for i in range (len(self.initial[0])):
             if i==0:
@@ -143,7 +160,7 @@ class HMM():
                 val_initial = i
             break
         val_etat = val_initial
-        res = self.__lettres_numbers[val_initial]
+        res = self.__letters_number[val_initial]
         for var in range (n):
             for j in range(len(self.transitions[0])):
                 p_transition = transition_additionne[val_etat, j]
@@ -155,13 +172,9 @@ class HMM():
                 if p_emission >= nb:
                     val_emission = k
                 break
-            res += self.__lettres_numbers[val_emission]
+            res += self.__letters_number[val_emission]
             val_etat = val_transition
         return res
-
-
-
-
 
     def save(self, address):
         nfile = open(address, "w")
