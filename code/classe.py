@@ -61,7 +61,7 @@ class HMM():
 
 
     @initial.setter
-    def set_initial(self, values):
+    def initial(self, values):
         self.check_initial(values)
         self.__inital = values
 
@@ -102,12 +102,12 @@ class HMM():
                 raise ValueError("La somme des probabilités doit être égale à 1")
 
     @transitions.setter
-    def set_transitions(self, value):
+    def transitions(self, value):
         self.check_transition(value)
         self.__transitions = value
 
     @emissions.setter
-    def set_emmissions(self, value):
+    def emissions(self, value):
         self.check_emissions(value)
         self.__emissions = value
 
@@ -206,7 +206,7 @@ class HMM():
                 break
         val_etat = val_initial
         res = self.letters_number[val_initial]
-        for var in range (n):
+        for var in range(n):
             for j in range(len(self.transitions[0])):
                 p_transition = transition_additionne[val_etat, j]
                 if p_transition >= nb:
