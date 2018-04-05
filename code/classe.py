@@ -26,16 +26,6 @@ class HMM():
         # The list of vectors defining the emissions
         self.__emissions = emissions
 
-    def check_initial(self,values):
-        somme = 0
-        for i in range (len(self.initial)):
-            if self.initial[i] < 0:
-                raise ValueError ("Toutes les probabilités doivent être positives")
-            somme += self.initial[i]
-        if not isclose(somme,1):
-            raise ValueError ("La somme des probabilités doit être égale à 1")
-
-    def check_tran
 
     @property
     def letters_number(self):
@@ -65,8 +55,43 @@ class HMM():
     def get_letters_number(self):
         return self.__states_number
 
+
+    @letters_number.setter
+    def set_letters_number(self, value):
+        if type(value) == int and value >= 0 :
+            self.__letters_number = value
+        else :
+            raise ValueError("Le nombre de lettre doit être un entier positif")
+
+    @states_number.setter
+    def set_states_number(self, value):
+        if type(value) == int and value >= 0 :
+            self.__states_number = value
+        else :
+            raise ValueError("Le nombre d'états doit être un entier positif")
+
     @initial.setter
-    def initial(self,valeur):
+    def set_initial(self, values):
+        self.check_initial(values)
+        self.__inital = values
+
+
+    def check_initial(self,values):
+        if not isinstance(values, np.ndarray):
+            raise ValueError("Le vecteur initial doit être un vecteur")
+
+        else :
+            somme = 0
+            for i in range (len(values)):
+                if values[i] < 0:
+                    raise ValueError ("Toutes les probabilités doivent être positives")
+                somme += values[i]
+
+            if not np.isclose([somme], [1]):
+                raise ValueError ("La somme des probabilités doit être égale à 1")
+
+
+
 
 
 
