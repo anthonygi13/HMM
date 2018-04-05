@@ -242,6 +242,20 @@ class HMM():
             nfile.write("\n")
 
         nfile.close()
+
+    def __eq__(self, hmm2): #le = entre hmm mais faut faire le = entre initial, transitions et emissions
+        if self.__letters_number != hmm2.__letters_number:
+            return False
+        if self.__states_number != hmm2.__states_number:
+            return False
+        if self.__inital != hmm2.__initial:
+            return False
+        if self.__transitions != hmm2.__transitions:
+            return False
+        if self.__emissions != hmm2.__emissions:
+            return False
+        return True
+
 '''
 hmm = HMM(2, 2, np.array([0.5, 0.5]), np.array([[1, 1], [1, 1]]), np.array([[1, 1], [1, 1]]))
 
