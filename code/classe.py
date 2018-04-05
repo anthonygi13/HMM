@@ -12,7 +12,8 @@ class HMM():
     #mettre des raise...
     #faire des setter
 
-    def __init__(self, letters_number, states_number, initial, transitions, emissions):
+    #virer les Nones
+    def __init__(self, letters_number=None, states_number=None, initial=None, transitions=None, emissions=None):
         # The number of letters
         self.__letters_number = letters_number
         # The number of states
@@ -67,7 +68,7 @@ class HMM():
 
         data = open(adr, 'r')
         line = data.readline()
-        c = 0
+        c = 0 #donner des noms pas ambigus aux variables
 
 
         while c!= 5:
@@ -115,6 +116,7 @@ class HMM():
 
 
     def gen_rand(self,n):
+        #long
         initial_additionne = np.zeros(len(self.initial), 1)
         for i in range (len(self.initial[0])):
             if i==0:
@@ -145,7 +147,7 @@ class HMM():
                 val_initial = i
             break
         val_etat = val_initial
-        res = self.__lettres_numbers[val_initial]
+        res = self.__letters_number[val_initial]
         for var in range (n):
             for j in range(len(self.transitions[0])):
                 p_transition = transition_additionne[val_etat, j]
@@ -157,13 +159,9 @@ class HMM():
                 if p_emission >= nb:
                     val_emission = k
                 break
-            res += self.__lettres_numbers[val_emission]
+            res += self.__letters_number[val_emission]
             val_etat = val_transition
         return res
-
-
-
-
 
     def save(self, address):
         nfile = open(address, "w")
@@ -189,7 +187,7 @@ class HMM():
 
 hmm = HMM(2, 2, np.array([0.5, 0.5]), np.array([[1, 1], [1, 1]]), np.array([[1, 1], [1, 1]]))
 
-hmm.save("test.txt")"""
+hmm.save("test.txt")
 
 HMM = HMM('test.txt')
 HMM.affiche()
