@@ -44,7 +44,7 @@ class HMM():
     def emissions(self):
         return self.__emissions
     
-
+    @staticmethod
     def load(self, adr):
         """charge l'adresse"""
 
@@ -173,3 +173,6 @@ class HMM():
 hmm = HMM(2, 2, np.array([0.5, 0.5]), np.array([[1, 1], [1, 1]]), np.array([[1, 1], [1, 1]]))
 
 hmm.save("test.txt")"""
+
+HMM = HMM('test.txt')
+HMM.affiche()
