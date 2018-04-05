@@ -25,6 +25,17 @@ class HMM():
         # The list of vectors defining the emissions
         self.__emissions = emissions
 
+    def check_initial(self,values):
+        somme = 0
+        for i in range (len(self.initial)):
+            if self.initial[i] < 0:
+                raise ValueError ("Toutes les probabilités doivent être positives")
+            somme += self.initial[i]
+        if not isclose(somme,1):
+            raise ValueError ("La somme des probabilités doit être égale à 1")
+
+    def check_tran
+
     @property
     def letters_number(self):
         return self.__letters_number
@@ -52,6 +63,10 @@ class HMM():
     @states_number.getter
     def get_letters_number(self):
         return self.__states_number
+
+    @initial.setter
+    def initial(self,valeur):
+
 
 
     """"
@@ -189,5 +204,5 @@ hmm = HMM(2, 2, np.array([0.5, 0.5]), np.array([[1, 1], [1, 1]]), np.array([[1, 
 
 hmm.save("test.txt")
 
-HMM = HMM('test.txt')
-HMM.affiche()
+#HMM = HMM('test.txt')
+#HMM.affiche()
