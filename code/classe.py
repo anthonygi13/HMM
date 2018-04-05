@@ -1,7 +1,8 @@
-######################
-# Fichier classe.py  #
-# 04/04/18           #
-######################
+###########################
+#  Fichier classe.py      #
+# 04/04/18                #
+# la communauté de l'info #
+###########################
 
 import numpy as np
 import random
@@ -12,7 +13,7 @@ class HMM():
     #mettre des raise...
     #faire des setter
 
-    def __init__(self, letters_number, states_number, initial, transitions, emissions):
+    def __init__(self, letters_number=None, states_number=None, initial=None, transitions=None, emissions=None):
         # The number of letters
         self.__letters_number = letters_number
         # The number of states
@@ -105,12 +106,9 @@ class HMM():
 
         data.close()
 
-    def affiche(self):
-        print('The number of letters : ', self.__letters_number)
-        print('The number of states : ', self.__states_number)
-        print('The initial transitions : ', self.__initial)
-        print('The internal transitions : ', self.__transitions)
-        print('The emissions : ', self.__emissions)
+
+    def __str__(self):
+        return 'The number of letters : ' +  str(self.__letters_number) +'\n' +  ' The number of states : '+ str(self.__states_number) +'\n'+ ' The initial vector : ' +  str(self.__initial) +'\n'+  ' The internal transitions : ' +'\n'+ str(self.__transitions) +'\n'+ ' The emissions : ' +'\n'+ str(self.__emissions)
 
 
 
@@ -186,10 +184,13 @@ class HMM():
             nfile.write("\n")
 
         nfile.close()
-
+'''
 hmm = HMM(2, 2, np.array([0.5, 0.5]), np.array([[1, 1], [1, 1]]), np.array([[1, 1], [1, 1]]))
 
-hmm.save("test.txt")"""
+hmm.save("test1.txt")
 
-HMM = HMM('test.txt')
-HMM.affiche()
+HMM = HMM('test1.txt')
+HMM.affiche()'''
+hmm1=HMM()
+hmm1.load('test1.txt')
+print(hmm1)
