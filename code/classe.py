@@ -11,7 +11,7 @@ import time
 class HMM:
     """ Define an HMM"""
 
-    #mettre des raise...
+    #mettre des raise au niveau du __init__
     #faire des setter
 
     #virer les Nones
@@ -216,14 +216,12 @@ class HMM:
             return False
         return True
 
-'''
-hmm = HMM(2, 2, np.array([0.5, 0.5]), np.array([[1, 1], [1, 1]]), np.array([[1, 1], [1, 1]]))
+    def pfw(self, w):
+        if len(w) == 0:
+            raise ValueError("w ne doit pas être vide")
+        f = self.initial * self.emissions[:, w[0]]
+        for i in range(len(w)):
+            f = np.dot(f, self.transitions) * self.emissions[:, w[i]]
+        return np.sum(f)
 
-hmm.save("test1.txt")
 
-HMM = HMM('test1.txt')
-HMM.affiche()'''
-
-#hmm1=HMM.load('test2.txt')
-
-#print(hmm1)
