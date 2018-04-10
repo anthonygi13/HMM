@@ -17,8 +17,13 @@ class HMM:
     #virer les Nones
     def __init__(self, letters_number, states_number, initial, transitions, emissions):
         # The number of letters
+        if type(letters_number) != int or letters_number < 0:
+            raise ValueError("The letters number should be a positive integer")
         self.__letters_number = letters_number
         # The number of states
+        if type(states_number) != int or states_number < 0 :
+            if type(self.letters_number) != int:
+                raise ValueError("The letters number should be a positive integer")
         self.__states_number = states_number
         # The vector defining the initial weights
         self.__initial = initial

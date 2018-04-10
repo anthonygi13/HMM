@@ -34,6 +34,12 @@ class TestHMM(unittest.TestCase):
         self.assertTrue(self.hmm2.transitions == np.array([ 0.8,  0.1 , 0.1], [ 0.8 , 0.9 , 0.1], [ 0.8 , 0.9 , 0.1]))
         self.assertTrue(self.hmm2.emissions == np.array([ 0.5 , 0.5 ], [ 0.6 , 0.4 ], [ 0.9 ,  0.1]))
 
+    def test_generate_random(self):
+        sequence = self.hmm1.generate_random(5)
+        self.assertTrue(type(sequence) == int)
+        self.assertTrue(len(sequence) == 5)
+
+
 
 if __name__ == "__main__":
     unittest.main()
