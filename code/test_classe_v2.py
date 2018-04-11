@@ -21,7 +21,7 @@ class TestHMM_2(unittest.TestCase):
     def test_load(self):
         self.assertTrue(self.hmm1.letters_number == 2)
         self.assertTrue(self.hmm1.states_number == 2)
-        self.assertTrue(self.hmm1.initial.all == np.array([(0.5 , 0.5)]).all) #essayer individuellement, voir en bas
+        self.assertTrue(self.hmm1.initial.all == np.array([(0.5 , 0.5)]).all)                  #essayer individuellement, voir en bas
         self.assertTrue(self.hmm1.transitions.all == np.array([(0.9, 0.1), (0.1, 0,9)]).all)
         self.assertTrue(self.hmm1.emissions.all == np.array([(0.5, 0.5), (0.7, 0, 3)]).all)
 
@@ -71,4 +71,4 @@ if __name__ == "__main__":
         self.assertTrue(self.i6.elimFM())
 '''
 
-print (np.array([1, 2, 3]) == np.array([1, 2, 3]))
+print ((np.array([1, 2, 3]) == np.array([1, 2, 3])).all())

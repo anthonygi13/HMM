@@ -15,7 +15,6 @@ class TestHMM(unittest.TestCase):
     def setUp(self):
         self.hmm1 = HMM.load('test1.txt') # lui pas de probleme
         self.hmm2 = HMM.load('test2.txt') # pas de probleme
-        self.hmm3 = HMM.load('test3.txt')  # attention , lui somme != 0
 
     def test_Error1(self):
         self.assertRaises(AssertionError, HMM, 'test3.txt')
@@ -31,7 +30,7 @@ class TestHMM(unittest.TestCase):
         self.assertTrue(self.hmm2.letters_number == 2)
         self.assertTrue(self.hmm2.states_number == 3)
         self.assertTrue((self.hmm2.initial == np.array([[ 0.5 , 0.2 , 0.3]])).all())
-        self.assertTrue((self.hmm2.transitions == np.array([[ 0.8,  0.1 , 0.1], [ 0.8 , 0.9 , 0.1], [ 0.8 , 0.9 , 0.1]])).all())
+        self.assertTrue((self.hmm2.transitions == np.array([[ 0.8,  0.1 , 0.1], [ 0.8 , 0.1 , 0.1], [ 0.7 , 0.2 , 0.1]])).all())
         self.assertTrue((self.hmm2.emissions == np.array([[ 0.5 , 0.5 ], [ 0.6 , 0.4 ], [ 0.9 ,  0.1]])).all())
 
     def test_generate_random(self):
