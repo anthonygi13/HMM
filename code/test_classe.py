@@ -20,7 +20,7 @@ class TestHMM(unittest.TestCase):
         self.assertRaises(ValueError, HMM, 2, 3, np.array([0.5, 0.2, 0.3]), np.array([(0.8, 0.1, 0.3), (0.8, 0.9, 0.3), (0.8, 0.9, 0.3)]), np.array([(0.3, 0.3), (0.6, 0.3), (0.5, 0.5)]))
 
     def test_Error2(self):
-        self.assertRaises(AssertionError, HMM, 2, 3, np.array([[ 0.5 , 0.2 , -0.3]]), np.array([[ 0.8,  0.1 , 0.1], [ 0.8 , 0.1 , 0.1], [ 0.7 , 0.2 , 0.1]]), np.array([[ 0.5 , 0.5 ], [ 0.6 , 0.4 ], [ 0.9 ,  0.1]]))
+        self.assertRaises(ValueError, HMM, 2, 3, np.array([[ 0.5 , 0.2 , -0.3]]), np.array([[ 0.8,  0.1 , 0.1], [ 0.8 , 0.1 , 0.1], [ 0.7 , 0.2 , 0.1]]), np.array([[ 0.5 , 0.5 ], [ 0.6 , 0.4 ], [ 0.9 ,  0.1]]))
 
     def test_load(self):
         self.assertTrue(self.hmm1.letters_number == 2)
