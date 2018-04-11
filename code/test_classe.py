@@ -17,14 +17,14 @@ class TestHMM(unittest.TestCase):
         self.hmm2 = HMM.load('test2.txt') # pas de probleme
 
     def test_Error1(self):
-        self.assertRaises(AssertionError, HMM, 'test3.txt')
+        self.assertRaises(AssertionError, HMM.load, 'test3.txt')
 
     def test_load(self):
         self.assertTrue(self.hmm1.letters_number == 2)
         self.assertTrue(self.hmm1.states_number == 2)
         self.assertTrue((self.hmm1.initial == np.array([[0.5 , 0.5]])).all)
         self.assertTrue((self.hmm1.transitions == np.array([[0.9, 0.1], [0.1, 0,9]])).all())
-        self.assertTrue(self.hmm1.emissions == np.array([[0.5, 0.5], [0.7, 0, 3]]))
+        self.assertTrue((self.hmm1.emissions == np.array([[0.5, 0.5], [0.7, 0.3]])).all())
 
     def test_load1(self):
         self.assertTrue(self.hmm2.letters_number == 2)
@@ -76,4 +76,29 @@ if __name__ == "__main__":
 
     def testElimFM6(self):
         self.assertTrue(self.i6.elimFM())
+
+
+
+
+def test_E(self):
+    try:
+        HMM.load('test3.txt')
+    except ValueError:
+        self.fail("The probabilities sum should be equal to 1 for each lign")
+
+
+def test_E1(self):
+    try:
+        HMM.load('test2.txt')
+    except ValueError:
+        self.fail("The probabilities should be positive numbers")
+
+
+def test_E2(self):
+    try:
+        HMM.load('test1.txt')
+    except ValueError:
+        self.fail("The probabilities should be positive numbers")
+
+
 '''
