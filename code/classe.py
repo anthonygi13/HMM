@@ -206,6 +206,7 @@ class HMM:
                 nfile.write(str(self.emissions[i, j]) + " ")
             nfile.write("\n")
 
+
         nfile.close()
 
     def __eq__(self, hmm2):
@@ -230,5 +231,5 @@ class HMM:
         return np.sum(f)
 
 
-test = HMM(2, 2, np.array([0.5, 0.5]), np.array([(0.9, 0.1), (0.1, 0.9)]), np.array([(0.5, 0.5), (0.7, 0.3)]))
+test = HMM(2, 2, np.array([0.5, 0.5]), np.array([[0.9, 0.1], [0.1, 0.9]]), np.array([[0.5, 0.5], [0.7, 0.3]]))
 test.save("test_comment_ca_marche")
