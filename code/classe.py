@@ -26,10 +26,13 @@ class HMM:
                 raise ValueError("The letters number should be a positive integer")
         self.__states_number = states_number
         # The vector defining the initial weights
+        self.check_initial(initial)
         self.__initial = initial
         # The array defining the transitions
+        self.check_transitions(transitions)
         self.__transitions = transitions
         # The list of vectors defining the emissions
+        self.check_emissions(emissions)
         self.__emissions = emissions
 
     @property
@@ -93,7 +96,7 @@ class HMM:
         else:
             raise ValueError("The dimension of the parameter array should be 1 or 2")
 
-    def check_transition(self, value):
+    def check_transitions(self, value):
         self.check_dim(value, self.states_number, self.states_number)
 
     def check_emissions(self, value):
@@ -108,7 +111,7 @@ class HMM:
 
     @transitions.setter
     def transitions(self, value):
-        self.check_transition(value)
+        self.check_transitions(value)
         self.__transitions = value
 
     @emissions.setter

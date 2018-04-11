@@ -37,7 +37,7 @@ class TestHMM(unittest.TestCase):
     def test_generate_random(self):
         sequence = self.hmm1.generate_random(5)
         self.assertTrue(type(sequence) == np.array)
-        self.assertTrue(sequence.dim == 5)
+        self.assertTrue(sequence.shape[0] == 5)
 
 
 
