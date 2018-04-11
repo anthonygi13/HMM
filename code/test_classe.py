@@ -43,6 +43,9 @@ class TestHMM(unittest.TestCase):
         self.assertTrue(type(sequence) == np.ndarray)
         self.assertTrue(sequence.shape[0] == 5)
 
+    def test_save(self):
+        self.hmm1.save('test_de_test1.txt')
+        self.assertEqual('test1.txt','test_de_test1.txt')
 
 
 if __name__ == "__main__":
