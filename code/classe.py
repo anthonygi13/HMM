@@ -98,9 +98,11 @@ class HMM:
 
     def check_transitions(self, value):
         self.check_dim(value, self.states_number, self.states_number)
+        self.check_probability_array(value)
 
     def check_emissions(self, value):
         self.check_dim(value, self.states_number, self.letters_number)
+        self.check_probability_array(value)
 
     @staticmethod
     def check_dim(tableau, nb_lignes, nb_colonnes):
@@ -241,6 +243,7 @@ class HMM:
             
             b = np.dot(b, self.transitions) * self.emissions[:, w[i]]
 
+'''
 test = HMM(2, 2, np.array([0.5, 0.5]), np.array([[0.9, 0.1], [0.1, 0.9]]), np.array([[0.5, 0.5], [0.7, 0.3]]))
-test.save("test_comment_ca_marche")
+test.save("test_comment_ca_marche")'''
 
