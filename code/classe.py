@@ -233,6 +233,14 @@ class HMM:
             f = np.dot(f, self.transitions) * self.emissions[:, w[i]]
         return np.sum(f)
 
+    def pbw(self,w):
+        if len(w) == 0:
+            raise ValueError("w ne doit pas être vide")
+        b = np.array([1]*len(w))
+        for i in range (len(w), 0, -1):
+            
+            b = np.dot(b, self.transitions) * self.emissions[:, w[i]]
 
 test = HMM(2, 2, np.array([0.5, 0.5]), np.array([[0.9, 0.1], [0.1, 0.9]]), np.array([[0.5, 0.5], [0.7, 0.3]]))
 test.save("test_comment_ca_marche")
+
