@@ -253,10 +253,41 @@ class HMM:
         h = self.initial
         for i in range (1, len(w)):
             h = np.dot(self.emissions[:,w[i]] * h, self.transitions)
-        #calculer P(on+1 sachant w pour tous les o puis faire le max)
+        p = np.dot(h, self.emissions)
+        return np.argmax(p)
+
+
 
 test = HMM(2, 2, np.array([0.5, 0.5]), np.array([[0.9, 0.1], [0.1, 0.9]]), np.array([[0.5, 0.5], [0.7, 0.3]]))
-test.save("test_comment_ca_marche")'''
+test.save("test_comment_ca_marche")
 
-for i in range (5, 0, -1):
-    print(i)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
