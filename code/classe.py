@@ -17,11 +17,11 @@ class HMM:
     #virer les Nones
     def __init__(self, letters_number, states_number, initial, transitions, emissions):
         # The number of letters
-        if type(letters_number) != int or letters_number < 0:
+        if type(letters_number) != int or letters_number <= 0:
             raise ValueError("The letters number should be a positive integer")
         self.__letters_number = letters_number
         # The number of states
-        if type(states_number) != int or states_number < 0 :
+        if type(states_number) != int or states_number <= 0 :
             if type(self.letters_number) != int:
                 raise ValueError("The letters number should be a positive integer")
         self.__states_number = states_number
@@ -236,7 +236,7 @@ class HMM:
         if len(w) == 0:
             raise ValueError("w ne doit pas être vide")
         f = self.initial * self.emissions[:, w[0]]
-        for i in range(len(w)):
+        for i in range(1, len(w)):
             f = np.dot(f, self.transitions) * self.emissions[:, w[i]]
         return np.sum(f)
 
@@ -244,14 +244,19 @@ class HMM:
         if len(w) == 0:
             raise ValueError("w ne doit pas être vide")
         b = np.array([1]*len(w))
-        for i in range (len(w), 0, -1):
+        for i in range (len(w)-2, -1, -1):
+            b = np.dot(self.transitions, self.emissions * b)
+        return np.sum(self.initial * b * self.emissions[:,w[0]])
 
-            b = np.dot(b, self.transitions) * self.emissions[:, w[i]]
 
+    def predit(self, w):
+        h = self.initial
+        for i in range (1, len(w)):
+            h = np.dot(self.emissions[:,w[i]] * h, self.transitions)
+        #calculer P(on+1 sachant w pour tous les o puis faire le max)
 
-'''
 test = HMM(2, 2, np.array([0.5, 0.5]), np.array([[0.9, 0.1], [0.1, 0.9]]), np.array([[0.5, 0.5], [0.7, 0.3]]))
 test.save("test_comment_ca_marche")'''
 
-test = HMM.load("test1.txt")
-print (test.generate_random(5))
+for i in range (5, 0, -1):
+    print(i)
