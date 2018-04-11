@@ -69,6 +69,7 @@ class HMM:
 
     @staticmethod
     def check_probability_array(array):
+        '''verifie si la somme des valeurs sur une colonne est ==1 et qu'il n'y est pas de valeurs négatives'''
 
         if not isinstance(array, np.ndarray):
             raise ValueError("The parameter array should be a np.ndarray")
@@ -97,10 +98,12 @@ class HMM:
             raise ValueError("The dimension of the parameter array should be 1 or 2")
 
     def check_transitions(self, value):
+        '''verifie si la somme des valeurs sur une colonne est ==1 et qu'il n'y est pas de valeurs négatives dans tableau de transition'''
         self.check_dim(value, self.states_number, self.states_number)
         self.check_probability_array(value)
 
     def check_emissions(self, value):
+        '''verifie si la somme des valeurs sur une colonne est ==1 et qu'il n'y est pas de valeurs négatives dans tableau de emission'''
         self.check_dim(value, self.states_number, self.letters_number)
         self.check_probability_array(value)
 
@@ -123,7 +126,7 @@ class HMM:
 
     @staticmethod
     def load(adr):
-        """charge l'adresse"""
+        """charge un HMM depuis une adresse donnee"""
 
         data = open(adr, 'r')
         line = data.readline()
@@ -190,10 +193,10 @@ class HMM:
         for i in range(n):
             sequence[i] = self.draw_multinomial(self.emissions[actual_state])
             actual_state = self.draw_multinomial(self.transitions[actual_state])
-        print (type(sequence))
         return sequence
 
     def save(self, address):
+        '''sauvegarde un HMM'''
         nfile = open(address, "w")
         nfile.write("# The number of letters\n")
         nfile.write(str(self.letters_number) + "\n")
@@ -242,8 +245,9 @@ class HMM:
             raise ValueError("w ne doit pas être vide")
         b = np.array([1]*len(w))
         for i in range (len(w), 0, -1):
-            
+
             b = np.dot(b, self.transitions) * self.emissions[:, w[i]]
+
 
 '''
 test = HMM(2, 2, np.array([0.5, 0.5]), np.array([[0.9, 0.1], [0.1, 0.9]]), np.array([[0.5, 0.5], [0.7, 0.3]]))
