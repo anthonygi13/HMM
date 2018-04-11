@@ -178,7 +178,7 @@ class HMM:
         random.seed(time.clock())
         random_number = random.random()
         probability_sum = 0
-        for i, probability in enumerate(list):
+        for i, probability in enumerate(array):
             probability_sum += probability
             if random_number <= probability_sum:
                 return i
@@ -190,6 +190,8 @@ class HMM:
         for i in range(n):
             sequence[i] = self.draw_multinomial(self.emissions[actual_state])
             actual_state = self.draw_multinomial(self.transitions[actual_state])
+        print (type(sequence))
+        return sequence
 
     def save(self, address):
         nfile = open(address, "w")
@@ -247,3 +249,5 @@ class HMM:
 test = HMM(2, 2, np.array([0.5, 0.5]), np.array([[0.9, 0.1], [0.1, 0.9]]), np.array([[0.5, 0.5], [0.7, 0.3]]))
 test.save("test_comment_ca_marche")'''
 
+test = HMM.load("test1.txt")
+print (test.generate_random(5))
