@@ -198,12 +198,12 @@ class HMM:
         nfile.write("# The internal transitions\n")
         for i in range(len(self.transitions)):
             for j in range(len(self.transitions[0])):
-                nfile.write(str(self.transitions[i][j]) + " ")
+                nfile.write(str(self.transitions[i, j]) + " ")
             nfile.write("\n")
         nfile.write("# The emissions" + "\n")
         for i in range(len(self.emissions)):
             for j in range(len(self.emissions[0])):
-                nfile.write(str(self.emissions[i][j]) + " ")
+                nfile.write(str(self.emissions[i, j]) + " ")
             nfile.write("\n")
 
         nfile.close()
