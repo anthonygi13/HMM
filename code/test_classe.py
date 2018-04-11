@@ -23,8 +23,8 @@ class TestHMM(unittest.TestCase):
         self.assertTrue(self.hmm1.letters_number == 2)
         self.assertTrue(self.hmm1.states_number == 2)
         self.assertTrue((self.hmm1.initial == np.array([[0.5 , 0.5]])).all)
-        self.assertTrue((self.hmm1.transitions == np.array([[0.9, 0.1], [0.1, 0,9]])).all())
-        self.assertTrue(self.hmm1.emissions == np.array([[0.5, 0.5], [0.7, 0, 3]]))
+        self.assertTrue((self.hmm1.transitions == np.array([[0.9, 0.1], [0.1, 0.9]])).all())
+        self.assertTrue((self.hmm1.emissions == np.array([[0.5, 0.5], [0.7, 0.3]])).all())
 
     def test_load1(self):
         self.assertTrue(self.hmm2.letters_number == 2)
