@@ -45,7 +45,11 @@ class TestHMM(unittest.TestCase):
 
     def test_save(self):
         self.hmm1.save('test_de_test1.txt')
-        self.assertEqual('test1.txt','test_de_test1.txt')
+        self.assertTrue(self.hmm1.letters_number == HMM.load("test_de_test1.txt").letters_number)
+        self.assertTrue(self.hmm1.states_number == HMM.load("test_de_test1.txt").states_number)
+        self.assertTrue((self.hmm1.initial == HMM.load("test_de_test1.txt").initial).all())
+        self.assertTrue((self.hmm1.transitions == HMM.load("test_de_test1.txt").transitions).all())
+        self.assertTrue((self.hmm1.emissions == HMM.load("test_de_test1.txt").emissions).all())
 
 
 if __name__ == "__main__":
