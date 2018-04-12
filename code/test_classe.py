@@ -52,6 +52,19 @@ class TestHMM(unittest.TestCase):
         self.assertTrue((self.hmm1.emissions == HMM.load("test_de_test1.txt").emissions).all())
 
 
+    def test_pfw(self):
+        self.assertTrue(self.hmm1.pfw([0]) == 0.6)
+        self.assertTrue(self.hmm1.pfw([1]) == 0.4)
+        self.assertTrue(self.hmm1.pfw([0,0]) == 0.368)
+
+
+    def test_pbw(self):
+        self.assertTrue(self.hmm1.pbw([0]) == 0.6)
+        self.assertTrue(self.hmm1.pbw([1]) == 0.4)
+        self.assertTrue(self.hmm1.pbw([0,0]) == 0.368)
+
+
+
 if __name__ == "__main__":
     unittest.main()
 
