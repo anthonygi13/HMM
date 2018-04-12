@@ -4,24 +4,26 @@
 # la communauté de l'info #
 ###########################
 
+
 import numpy as np
 import random
 import time
 
+
 class HMM:
     """ Define an HMM"""
 
-    #mettre des raise au niveau du __init__
-    #faire des setter
+    # mettre des raise au niveau du __init__
+    # faire des setter
 
-    #virer les Nones
+    # virer les Nones
     def __init__(self, letters_number, states_number, initial, transitions, emissions):
         # The number of letters
         if type(letters_number) != int or letters_number <= 0:
             raise ValueError("The letters number should be a positive integer")
         self.__letters_number = letters_number
         # The number of states
-        if type(states_number) != int or states_number <= 0 :
+        if type(states_number) != int or states_number <= 0:
             if type(self.letters_number) != int:
                 raise ValueError("The letters number should be a positive integer")
         self.__states_number = states_number
@@ -65,7 +67,6 @@ class HMM:
         HMM.check_probability_array(value)
         if value.ndim != 1:
             raise ValueError("The parameter value should be a one dimension array")
-
 
     @staticmethod
     def check_probability_array(array):
@@ -132,28 +133,27 @@ class HMM:
         line = data.readline()
         hash_count = 0
 
-
         while hash_count <= 4:
             if line[0] == '#':
-                if hash_count == 0 :
+                if hash_count == 0:
                     letters_number = int(data.readline())
 
-                if hash_count == 1 :
+                if hash_count == 1:
                     states_number = int(data.readline())
 
-                if hash_count == 2 :
+                if hash_count == 2:
                     initial = np.zeros((states_number))
                     for i in range(states_number):
                         initial[i] = float(data.readline())
 
-                if hash_count == 3 :
+                if hash_count == 3:
                     transitions = np.zeros((states_number, states_number))
                     for i in range(states_number):
                         ligne = data.readline().split()
-                        for j in range (len(ligne)):
+                        for j in range(len(ligne)):
                             transitions[i, j] = float(ligne[j])
 
-                if hash_count == 4 :
+                if hash_count == 4:
                     emissions = np.zeros((states_number, letters_number))
                     for i in range(states_number):
                         ligne = data.readline().split()
@@ -168,9 +168,11 @@ class HMM:
 
         return HMM(letters_number, states_number, initial, transitions, emissions)
 
-
     def __str__(self):
-        return 'The number of letters : ' +  str(self.__letters_number) +'\n' +  ' The number of states : '+ str(self.__states_number) +'\n'+ ' The initial vector : ' +  str(self.__initial) +'\n'+  ' The internal transitions : ' +'\n'+ str(self.__transitions) +'\n'+ ' The emissions : ' +'\n'+ str(self.__emissions)
+        return 'The number of letters : ' + str(self.__letters_number) + '\n' + ' The number of states : ' + str(
+            self.__states_number) + '\n' + ' The initial vector : ' + str(
+            self.__initial) + '\n' + ' The internal transitions : ' + '\n' + str(
+            self.__transitions) + '\n' + ' The emissions : ' + '\n' + str(self.__emissions)
 
     @staticmethod
     def draw_multinomial(array):
@@ -216,7 +218,6 @@ class HMM:
                 nfile.write(str(self.emissions[i, j]) + " ")
             nfile.write("\n")
 
-
         nfile.close()
 
     def __eq__(self, hmm2):
@@ -224,7 +225,7 @@ class HMM:
             return False
         if self.states_number != hmm2.states_number:
             return False
-        if not np.isclose(self.initial,hmm2.initial):
+        if not np.isclose(self.initial, hmm2.initial):
             return False
         if not np.isclose(self.transitions, hmm2.transitions):
             return False
@@ -240,54 +241,48 @@ class HMM:
             f = np.dot(f, self.transitions) * self.emissions[:, w[i]]
         return np.sum(f)
 
-    def pbw(self,w):
+    def pbw(self, w):
         if len(w) == 0:
             raise ValueError("w ne doit pas être vide")
-        b = np.array([1]*len(w))
-        for i in range (len(w)-2, -1, -1):
+        b = np.array([1] * len(w))
+        for i in range(len(w) - 2, -1, -1):
             b = np.dot(self.transitions, self.emissions * b)
-        return np.sum(self.initial * b * self.emissions[:,w[0]])
-
+        return np.sum(self.initial * b * self.emissions[:, w[0]])
 
     def predit(self, w):
         h = self.initial
-        for i in range (1, len(w)):
-            h = np.dot(self.emissions[:,w[i]] * h, self.transitions)
+        for i in range(1, len(w)):
+            h = np.dot(self.emissions[:, w[i]] * h, self.transitions)
         p = np.dot(h, self.emissions)
         return np.argmax(p)
 
+    def Viterbi(self, w):
+        chemin = []
+        liste_etats = []
+        p = self.initial * self.emissions[:,w[0]]
+
+        for i in range(self.states_number):
+            chemin += [[i]]
+            liste_etats += [i]
+
+        for i in range(len(w)):
+            for k in range (len(liste_etats)):
+                m = 0
+                j_retenu = 0
+                for j in range(len(p)):
+                    a = m
+                    b = p[j] * self.transitions(liste_etats[j], k)
+                    m = max(a,b)
+                    p[i] = m * self.emissions(k, w[i])
+                    if m == b :
+                        j_retenu = j
+
+                chemin += chemin[j_retenu] + [k]
+
+        return chemin[np.argmax(p)]
 
 
 test = HMM(2, 2, np.array([0.5, 0.5]), np.array([[0.9, 0.1], [0.1, 0.9]]), np.array([[0.5, 0.5], [0.7, 0.3]]))
 test.save("test_comment_ca_marche")
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
