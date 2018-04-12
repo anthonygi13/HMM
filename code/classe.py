@@ -234,6 +234,7 @@ class HMM:
         return True
 
     def pfw(self, w):
+        #marche
         if len(w) == 0:
             raise ValueError("w ne doit pas être vide")
         f = self.initial * self.emissions[:, w[0]]
@@ -241,13 +242,14 @@ class HMM:
             f = np.dot(f, self.transitions) * self.emissions[:, w[i]]
         return np.sum(f)
 
-    def pbw(self, w):
+    def pbw(self,w):
+        #marche
         if len(w) == 0:
             raise ValueError("w ne doit pas être vide")
-        b = np.array([1] * len(w))
-        for i in range(len(w) - 2, -1, -1):
-            b = np.dot(self.transitions, self.emissions * b)
-        return np.sum(self.initial * b * self.emissions[:, w[0]])
+        b = np.array([1]*len(w))
+        for i in range (len(w)-2, -1, -1):
+            b = np.dot(self.transitions, self.emissions[:,i] * b)
+        return np.sum(self.initial * b * self.emissions[:,w[0]])
 
     def predit(self, w):
         h = self.initial
@@ -264,6 +266,14 @@ class HMM:
         for i in range(self.states_number):
             chemin += [[i]]
             liste_etats += [i]
+    def f(self, w):
+        if len(w) == 0:
+            raise ValueError("w ne doit pas être vide")
+        f = np.zeros((self.states_number, len(w)))
+        f[:, 0] = self.initial * self.emissions[:, w[0]]
+        for i in range(1, len(w)):
+            f[:, i] = np.dot(f[:, i-1], self.transitions) * self.emissions[:, w[i]]
+        return f
 
         for i in range(len(w)):
             for k in range (len(liste_etats)):
@@ -277,12 +287,44 @@ class HMM:
                     if m == b :
                         j_retenu = j
 
+
+
+test = HMM(2, 2, np.array([0.5, 0.5]), np.array([[0.9, 0.1], [0.1, 0.9]]), np.array([[0.5, 0.5], [0.7, 0.3]]))
+print(test.pbw([1, 0]))
+
                 chemin += chemin[j_retenu] + [k]
+#test.save("test_comment_ca_marche")
 
         return chemin[np.argmax(p)]
 
 
 test = HMM(2, 2, np.array([0.5, 0.5]), np.array([[0.9, 0.1], [0.1, 0.9]]), np.array([[0.5, 0.5], [0.7, 0.3]]))
 test.save("test_comment_ca_marche")
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
