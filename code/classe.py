@@ -261,7 +261,7 @@ class HMM:
         return np.argmax(p)
 
 
-    def Viterbi(self, w):
+    def viterbi(self, w):
         chemin = []
         liste_etats = []
         p = self.initial * self.emissions[:,w[0]]
@@ -292,9 +292,18 @@ class HMM:
             f[:, i] = np.dot(f[:, i-1], self.transitions) * self.emissions[:, w[i]]
         return f
 
+    def b(self, w):
+        if len(w) == 0:
+            raise ValueError("w ne doit pas être vide")
+        b = np.zeros((self.states_number, len(w)))
+        b[:, len(w)-1] = np.array([1]*len(w))
+        for i in range (len(w)-2, -1, -1):
+            b[:, i] = np.dot(self.transitions, self.emissions[:,i] * b[:, i+1])
+        return b
+
 
 test = HMM(2, 2, np.array([0.5, 0.5]), np.array([[0.9, 0.1], [0.1, 0.9]]), np.array([[0.5, 0.5], [0.7, 0.3]]))
-print(test.pbw([1, 0]))
+print(test.b([1, 0]))
 
 #test.save("test_comment_ca_marche")
 
