@@ -335,13 +335,13 @@ class HMM:
         letters_number = int(nbr_lettre)
         states_number = int(nbr_etat)
         initial = list_rand_sum_1_dim(1, nbr_etat)
-        print(initial)
+        #print(initial)
         transitions = list_rand_sum_1_dim(nbr_etat, nbr_etat)
-        print(transitions)
+        #print(transitions)
         emissions = list_rand_sum_1_dim(nbr_etat, nbr_lettre)
-        print(emissions)
+        #print(emissions)
 
-        #return HMM(letters_number, states_number, initial, transitions, emissions)
+        return HMM(letters_number, states_number, initial[0], transitions, emissions)
 
 
 '''
@@ -352,7 +352,3 @@ print(test.b([1, 0]))
 '''
 test = HMM.hmm_random(2,3)
 print(test)
-
-
-
-
