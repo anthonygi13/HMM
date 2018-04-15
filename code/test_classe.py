@@ -63,6 +63,18 @@ class TestHMM(unittest.TestCase):
         self.assertTrue(self.hmm1.pbw([1]) == 0.4)
         self.assertTrue(self.hmm1.pbw([0,0]) == 0.368)
 
+    def test_list_len1(self):
+        L = list_rand_sum_1_dim(2,5)
+        sum = 0
+        for i in range(5):
+            sum += L[0, i]
+        self.assertTrue(1 == sum)
+
+        sum = 0
+        for i in range(5):
+            sum += L[1, i]
+        self.assertTrue(1 == sum)
+
 
 
 if __name__ == "__main__":

@@ -9,6 +9,35 @@ import numpy as np
 import random
 import time
 
+def list_rand_sum_1_dim(n, m):
+    L = np.zeros((n, m))
+
+    for j in range(n):
+        for i in range(m):
+            s = random.random()
+            s = "%.2f" % s
+            L[j, i] = (s)
+
+        sum = 0
+
+        for i in range(m):
+            sum = sum + L[j, i]
+
+
+        for i in range(m):
+            L[j, i] = L[j, i] / sum
+            L[j, i] = "%.2f" % L[j, i]
+
+        sum = 0
+
+        for i in range(m):
+            sum = sum + L[j, i]
+
+        diff = 1 - sum
+        L[j, -1] = L[j, -1] + diff
+
+    return L
+
 
 class HMM:
     """ Define an HMM"""
@@ -301,35 +330,28 @@ class HMM:
             b[:, i] = np.dot(self.transitions, self.emissions[:,i] * b[:, i+1])
         return b
 
+    @staticmethod
+    def hmm_random(nbr_lettre, nbr_etat):
+        letters_number = int(nbr_lettre)
+        states_number = int(nbr_etat)
+        initial = list_rand_sum_1_dim(1, nbr_etat)
+        print(initial)
+        transitions = list_rand_sum_1_dim(nbr_etat, nbr_etat)
+        print(transitions)
+        emissions = list_rand_sum_1_dim(nbr_etat, nbr_lettre)
+        print(emissions)
 
+        #return HMM(letters_number, states_number, initial, transitions, emissions)
+
+
+'''
 test = HMM(2, 2, np.array([0.5, 0.5]), np.array([[0.9, 0.1], [0.1, 0.9]]), np.array([[0.5, 0.5], [0.7, 0.3]]))
 print(test.b([1, 0]))
 
 #test.save("test_comment_ca_marche")
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+'''
+test = HMM.hmm_random(2,3)
+print(test)
 
 
 
