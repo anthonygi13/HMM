@@ -4,6 +4,7 @@
 # la communauté de l'info #
 ###########################
 
+# faire un assert que les lettres du mots w c bien dans les observables
 
 import numpy as np
 import random
@@ -269,6 +270,7 @@ class HMM:
         f = self.initial * self.emissions[:, w[0]]
         for i in range(1, len(w)):
             f = np.dot(f, self.transitions) * self.emissions[:, w[i]]
+        print(f)
         return np.sum(f)
 
 
@@ -276,9 +278,10 @@ class HMM:
         #marche
         if len(w) == 0:
             raise ValueError("w ne doit pas être vide")
-        b = np.array([1]*len(w))
-        for i in range (len(w)-2, -1, -1):
-            b = np.dot(self.transitions, self.emissions[:,i] * b)
+        b = np.array([1]*self.states_number)
+        for i in range(len(w)-2, -1, -1):
+            b = np.dot(self.transitions, self.emissions[:, w[i+1]] * b)
+        print(b)
         return np.sum(self.initial * b * self.emissions[:,w[0]])
 
 
@@ -325,10 +328,15 @@ class HMM:
         if len(w) == 0:
             raise ValueError("w ne doit pas être vide")
         b = np.zeros((self.states_number, len(w)))
-        b[:, len(w)-1] = np.array([1]*len(w))
+        b[:, len(w)-1] = np.array([1]*self.states_number)
         for i in range (len(w)-2, -1, -1):
-            b[:, i] = np.dot(self.transitions, self.emissions[:,i] * b[:, i+1])
+            b[:, i] = np.dot(self.transitions, self.emissions[:, w[i+1]] * b[:, i+1])
         return b
+
+    def gamma(self, w):
+        f = self.f(w)
+        b = self.b(w)
+        return (f * b) / np.einsum('ji,ji->i', b, f)
 
     @staticmethod
     def hmm_random(nbr_lettre, nbr_etat):
@@ -351,4 +359,19 @@ print(test.b([1, 0]))
 #test.save("test_comment_ca_marche")
 '''
 test = HMM.hmm_random(2,3)
-print(test)
+#print(test)
+
+#test = HMM.load("test1.txt")
+"""
+print(test.pfw([0, 0, 1, 0, 0]))
+print(test.pbw([0, 0, 1, 0, 0]))
+print(test.f([0, 0, 1, 0, 0]))
+print(test.b([0, 0, 1, 0, 0]))
+print(test.gamma([0, 0, 1, 0, 0]))
+"""
+
+A = np.array([[1, 1, 1],
+           [2, 2, 2],
+           [5, 5, 5]])
+
+print(A/np.array([1, 2, 3]))
