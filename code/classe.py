@@ -377,10 +377,6 @@ class HMM:
 
 
 
-
-
-
-
     @staticmethod
     def hmm_random(nbr_lettre, nbr_etat): #faire des checks sur les parametres
         letters_number = int(nbr_lettre) #pk int ?
@@ -394,34 +390,3 @@ class HMM:
 
         return HMM(letters_number, states_number, initial[0], transitions, emissions)
 
-
-
-'''
-test = HMM(2, 2, np.array([0.5, 0.5]), np.array([[0.9, 0.1], [0.1, 0.9]]), np.array([[0.5, 0.5], [0.7, 0.3]]))
-print(test.b([1, 0]))
-
-#test.save("test_comment_ca_marche")
-'''
-test = HMM.hmm_random(2,3)
-#print(test)
-
-#test = HMM.load("test1.txt")
-"""
-print(test.pfw([0, 0, 1, 0, 0]))
-print(test.pbw([0, 0, 1, 0, 0]))
-print(test.f([0, 0, 1, 0, 0]))
-print(test.b([0, 0, 1, 0, 0]))
-print(test.gamma([0, 0, 1, 0, 0]))
-"""
-
-A = np.array([[1, 1, 1],
-           [2, 2, 2],
-           [5, 5, 5]])
-
-print(A/np.array([1, 2, 3]))
-
-a = np.array([[2, 4], [1,2]])
-print(a)
-b = np.array([[1,0], [1,1]])
-print(b)
-print(a+b)
