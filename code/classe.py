@@ -268,6 +268,7 @@ class HMM:
         if len(w) == 0:
             raise ValueError("w ne doit pas être vide")
         f = self.initial * self.emissions[:, w[0]]
+        print (f)
         for i in range(1, len(w)):
             f = np.dot(f, self.transitions) * self.emissions[:, w[i]]
         print(f)
@@ -343,11 +344,11 @@ class HMM:
         letters_number = int(nbr_lettre)
         states_number = int(nbr_etat)
         initial = list_rand_sum_1_dim(1, nbr_etat)
-        #print(initial)
+        # print(initial)
         transitions = list_rand_sum_1_dim(nbr_etat, nbr_etat)
-        #print(transitions)
+        # print(transitions)
         emissions = list_rand_sum_1_dim(nbr_etat, nbr_lettre)
-        #print(emissions)
+        # print(emissions)
 
         return HMM(letters_number, states_number, initial[0], transitions, emissions)
 
