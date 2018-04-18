@@ -1,7 +1,7 @@
 ###########################
-#  Fichier classe.py      #
+# Fichier classe.py       #
 # 04/04/18                #
-# la communauté de l'info #
+# La communauté de l'info #
 ###########################
 
 # faire un assert que les lettres du mots w c bien dans les observables
@@ -10,7 +10,9 @@ import numpy as np
 import random
 import time
 
+
 def list_rand_sum_1_dim(n, m):
+    #check parmametres
     L = np.zeros((n, m))
 
     for j in range(n):
@@ -129,12 +131,12 @@ class HMM:
             raise ValueError("The dimension of the parameter array should be 1 or 2")
 
     def check_transitions(self, value):
-        '''verifie si la somme des valeurs sur une colonne est ==1 et qu'il n'y est pas de valeurs négatives dans tableau de transition'''
+        # verifie si la somme des valeurs sur une colonne est = 1 et qu'il n'y est pas de valeurs négatives dans tableau de transition
         self.check_dim(value, self.states_number, self.states_number)
         self.check_probability_array(value)
 
     def check_emissions(self, value):
-        '''verifie si la somme des valeurs sur une colonne est ==1 et qu'il n'y est pas de valeurs négatives dans tableau de emission'''
+        # verifie si la somme des valeurs sur une colonne est = 1 et qu'il n'y est pas de valeurs négatives dans tableau de emission
         self.check_dim(value, self.states_number, self.letters_number)
         self.check_probability_array(value)
 
@@ -220,6 +222,8 @@ class HMM:
         return array.shape[1] - 1
 
     def generate_random(self, n):
+        if type(n) != int:
+            raise ValueError("n doit être un entier")
         sequence = np.zeros(n)
         actual_state = self.draw_multinomial(self.initial)
         for i in range(n):
@@ -264,6 +268,7 @@ class HMM:
         return True
 
     def pfw(self, w):
+        #check w
         #marche
         if len(w) == 0:
             raise ValueError("w ne doit pas être vide")
@@ -276,6 +281,7 @@ class HMM:
 
 
     def pbw(self,w):
+        #check w
         #marche
         if len(w) == 0:
             raise ValueError("w ne doit pas être vide")
@@ -287,6 +293,7 @@ class HMM:
 
 
     def predit(self, w):
+        #check w
         h = self.initial
         for i in range(1, len(w)):
             h = np.dot(self.emissions[:, w[i]] * h, self.transitions)
@@ -295,6 +302,7 @@ class HMM:
 
 
     def viterbi(self, w):
+        #check w
         chemin = []
         liste_etats = []
         p = self.initial * self.emissions[:,w[0]]
@@ -317,6 +325,7 @@ class HMM:
 
 
     def f(self, w):
+        #check w
         if len(w) == 0:
             raise ValueError("w ne doit pas être vide")
         f = np.zeros((self.states_number, len(w)))
@@ -326,6 +335,7 @@ class HMM:
         return f
 
     def b(self, w):
+        # check w
         if len(w) == 0:
             raise ValueError("w ne doit pas être vide")
         b = np.zeros((self.states_number, len(w)))
@@ -335,6 +345,7 @@ class HMM:
         return b
 
     def gamma(self, w):
+        # check w
         f = self.f(w)
         b = self.b(w)
         return (f * b) / np.einsum('ji,ji->i', b, f)
@@ -371,8 +382,8 @@ class HMM:
 
 
     @staticmethod
-    def hmm_random(nbr_lettre, nbr_etat):
-        letters_number = int(nbr_lettre)
+    def hmm_random(nbr_lettre, nbr_etat): #faire des checks sur les parametres
+        letters_number = int(nbr_lettre) #pk int ?
         states_number = int(nbr_etat)
         initial = list_rand_sum_1_dim(1, nbr_etat)
         # print(initial)
@@ -382,9 +393,6 @@ class HMM:
         # print(emissions)
 
         return HMM(letters_number, states_number, initial[0], transitions, emissions)
-
-
-
 
 
 
