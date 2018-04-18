@@ -330,7 +330,6 @@ class HMM:
 
 
     def f(self, w):
-        #check w
         if len(w) == 0:
             raise ValueError("w ne doit pas être vide")
         f = np.zeros((self.states_number, len(w)))
@@ -414,8 +413,49 @@ class HMM:
 
         return HMM(letters_number, states_number, initial[0], transitions, emissions)
 
-test = HMM.load("test1.txt")
-S = [[0, 1]]
-test.bw1(S)
-#print (test.gamma(S[0]))
-print (test.initial)
+
+
+'''
+test = HMM(2, 2, np.array([0.5, 0.5]), np.array([[0.9, 0.1], [0.1, 0.9]]), np.array([[0.5, 0.5], [0.7, 0.3]]))
+print(test.b([1, 0]))
+
+#test.save("test_comment_ca_marche")
+'''
+#test = HMM.hmm_random(2,3)
+#print(test)
+
+#test = HMM.load("test1.txt")
+"""
+print(test.pfw([0, 0, 1, 0, 0]))
+print(test.pbw([0, 0, 1, 0, 0]))
+print(test.f([0, 0, 1, 0, 0]))
+print(test.b([0, 0, 1, 0, 0]))
+print(test.gamma([0, 0, 1, 0, 0]))
+"""
+
+#A = np.ones((3, 3, 3))
+
+B = np.array([[1, 4, 7],
+           [2, 5, 8],
+           [3, 6, 9]])
+
+print(np.tile(B, (3, 1, 1)))
+
+print(np.tile(B, (3, 1, 1)).T)
+
+"""
+A = np.array([[1, 1, 1],
+           [2, 2, 2],
+           [5, 5, 5]])
+"""
+#i = [0, 0, 0, 2]
+#print(A[i])
+"""
+print(A/np.array([1, 2, 3]))
+
+a = np.array([[2, 4], [1,2]])
+print(a)
+b = np.array([[1,0], [1,1]])
+print(b)
+print(a+b)
+"""
