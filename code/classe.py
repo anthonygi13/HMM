@@ -339,6 +339,37 @@ class HMM:
         b = self.b(w)
         return (f * b) / np.einsum('ji,ji->i', b, f)
 
+    def xi(self,w):
+        #à revoir !!!!
+        xi = np.zeros((len(w), self.states_number, self.states_number))
+        f = self.f(w)
+        b = self.b(w)
+        for t in range (len(w)):
+            xi[t] = np.dot(f[:,t] * self.transitions * self.emissions[:,w[t+1]], b[:,t])
+            xi[t] = xi[t] / np.sum(xi[t])
+        return xi
+
+
+    def bw1(self, S):
+        pi = np.zeros((self.states_number, 1))
+        for j in range (len(S)):
+            pi = pi + self.gamma(S[j][0])
+        self.initial = pi * (1/len(S))
+
+        transitions = np.zeros(self.states_number, self.states_number)
+        coeff_norm = 0
+        for j in range (len(S)):
+            for t in range (len(S[j])-1):
+                transition = transitions + self.xi(S[j])
+                coeff_norm += 1
+        self.transitions = transitions * (1/coeff_norm)
+
+
+
+
+
+
+
     @staticmethod
     def hmm_random(nbr_lettre, nbr_etat):
         letters_number = int(nbr_lettre)
@@ -351,6 +382,10 @@ class HMM:
         # print(emissions)
 
         return HMM(letters_number, states_number, initial[0], transitions, emissions)
+
+
+
+
 
 
 '''
@@ -376,3 +411,9 @@ A = np.array([[1, 1, 1],
            [5, 5, 5]])
 
 print(A/np.array([1, 2, 3]))
+
+a = np.array([[2, 4], [1,2]])
+print(a)
+b = np.array([[1,0], [1,1]])
+print(b)
+print(a+b)
