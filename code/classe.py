@@ -367,8 +367,21 @@ class HMM:
 
 
     def bw1(self, S):
+        assert len(S) != 0
         pi = np.zeros((self.states_number, 1))
-        for j in range (len(S)):
+        somme = 0
+        for k in range (len(self.initial)):
+            for j in range (len(S)):
+                pi[k] += self.gamma(S[j])[k][0]
+        for i in range (len(pi)):
+            somme += pi[i]
+        for k in range (len(pi)):
+            pi[k] = pi[k] / somme
+            self.initial[k] = pi[k]
+
+
+
+        '''for j in range (len(S)):
             pi = pi + self.gamma(S[j][0])
         self.initial = pi * (1/len(S))
 
@@ -378,7 +391,7 @@ class HMM:
             for t in range (len(S[j])-1):
                 transition = transitions + self.xi(S[j])
                 coeff_norm += 1
-        self.transitions = transitions * (1/coeff_norm)
+        self.transitions = transitions * (1/coeff_norm)'''
 
 
 
@@ -395,4 +408,8 @@ class HMM:
 
         return HMM(letters_number, states_number, initial[0], transitions, emissions)
 
-
+test = HMM.load("test1.txt")
+S = [[0, 1]]
+test.bw1(S)
+#print (test.gamma(S[0]))
+print (test.initial)
