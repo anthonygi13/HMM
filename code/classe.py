@@ -356,13 +356,16 @@ class HMM:
         return (f * b) / np.einsum('ji,ji->i', b, f)
 
     def xi(self,w):
-        #à revoir !!!!
-        xi = np.zeros((len(w), self.states_number, self.states_number))
+        xi = np.ones((self.states_number, self.states_number, len(w)))
         f = self.f(w)
         b = self.b(w)
-        for t in range (len(w)):
-            xi[t] = np.dot(f[:,t] * self.transitions * self.emissions[:,w[t+1]], b[:,t])
-            xi[t] = xi[t] / np.sum(xi[t])
+        E = self.emissions(np.array(w))
+        xi = xi * np.tile(f[:,:-1], self.states_number) *
+
+
+        for t in range (len(w)-1):
+            xi[:, :, t] = np.dot(f[:,t] * self.transitions * self.emissions[:,w[t+1]], b[:,t+1])
+            xi[:, :, t] = xi[:,:,t] / np.sum(xi[t])
         return xi
 
 
@@ -386,13 +389,16 @@ class HMM:
         self.initial = pi * (1/len(S))
 
         transitions = np.zeros(self.states_number, self.states_number)
-        coeff_norm = 0
         for j in range (len(S)):
             for t in range (len(S[j])-1):
                 transition = transitions + self.xi(S[j])
-                coeff_norm += 1
-        self.transitions = transitions * (1/coeff_norm)'''
+        self.transitions = transitions
 
+
+    def bw2(self, nbS, nbL, S, N):
+        hmm = self.hmm_random(nbL, nbS)
+        for i in range (N):
+            hmm = hmm.bw1(S)
 
 
     @staticmethod
