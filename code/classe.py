@@ -11,35 +11,40 @@ import random
 import time
 
 
-def list_rand_sum_1_dim(n, m):
-    #check parmametres
-    L = np.zeros((n, m))
 
-    for j in range(n):
-        for i in range(m):
+
+def list_rand_sum_2_dim(n, m):
+    if type(n) != int:
+        raise ValueError('le nombre de lettre doit etre un entier')
+    if type(m) != int:
+        raise ValueError('le nombre etat doit etre un entier')
+
+    L = np.zeros((n, m-1))
+
+    for j in range(n): #j colonne
+        for i in range(m-1): #i sur la ligne
             s = random.random()
-            s = "%.2f" % s
+            s = "%.3f" % s
             L[j, i] = (s)
 
-        sum = 0
+    for i in range(n):
+        L.sort()
 
-        for i in range(m):
-            sum = sum + L[j, i]
+    M = np.zeros((n, m))
 
 
-        for i in range(m):
-            L[j, i] = L[j, i] / sum
-            L[j, i] = "%.2f" % L[j, i]
 
-        sum = 0
+    for i in range(n): #pour chaque ligne
+        for j in range(0, m): #pour chaque colonne
+            if j == m-1:
+                M[i, j] = 1 - L[i, j-1]
+            elif j == 0:
+                M[i, j] = L[i, j]
+            else :
+                M[i,j] = L[i, j] - L[i, j-1]
 
-        for i in range(m):
-            sum = sum + L[j, i]
 
-        diff = 1 - sum
-        L[j, -1] = L[j, -1] + diff
-
-    return L
+    return M
 
 
 class HMM:
@@ -378,15 +383,16 @@ class HMM:
 
 
     @staticmethod
-    def hmm_random(nbr_lettre, nbr_etat): #faire des checks sur les parametres
-        letters_number = int(nbr_lettre) #pk int ?
-        states_number = int(nbr_etat)
-        initial = list_rand_sum_1_dim(1, nbr_etat)
+    def gen_HMM(nbr_lettre, nbr_etat): #faire des checks sur les parametres
+        letters_number = nbr_lettre
+        states_number = nbr_etat
+        initial = list_rand_sum_2_dim(1, nbr_etat)
         # print(initial)
-        transitions = list_rand_sum_1_dim(nbr_etat, nbr_etat)
+        transitions = list_rand_sum_2_dim(nbr_etat, nbr_etat)
         # print(transitions)
-        emissions = list_rand_sum_1_dim(nbr_etat, nbr_lettre)
+        emissions = list_rand_sum_2_dim(nbr_etat, nbr_lettre)
         # print(emissions)
 
         return HMM(letters_number, states_number, initial[0], transitions, emissions)
+
 

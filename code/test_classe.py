@@ -64,7 +64,7 @@ class TestHMM(unittest.TestCase):
         self.assertTrue(self.hmm1.pbw([0,0]) == 0.368)
 
     def test_list_len1(self):
-        L = list_rand_sum_1_dim(2,5)
+        L = list_rand_sum_2_dim(2,5)
         sum = 0
         for i in range(5):
             sum += L[0, i]
@@ -74,6 +74,24 @@ class TestHMM(unittest.TestCase):
         for i in range(5):
             sum += L[1, i]
         self.assertTrue(1 == sum)
+
+    def test_list_len2(self):
+        L = list_rand_sum_2_dim(3,5)
+        sum = 0
+        for i in range(5):
+            sum += L[0, i]
+        self.assertTrue(1 == sum)
+
+        sum = 0
+        for i in range(5):
+            sum += L[1, i]
+        self.assertTrue(1 == sum)
+
+        sum = 0
+        for i in range(5):
+            sum += L[2, i]
+        self.assertTrue(1 == sum)
+
 
 
 
