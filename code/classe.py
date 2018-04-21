@@ -359,7 +359,7 @@ class HMM:
         f = self.f(w)
         b = self.b(w)
         E = self.emissions(np.array(w))
-        xi = xi * np.tile(f[:,:-1], self.states_number) *
+       # xi = xi * np.tile(f[:,:-1], self.states_number) *
 
 
         for t in range (len(w)-1):
@@ -380,6 +380,16 @@ class HMM:
         for k in range (len(pi)):
             pi[k] = pi[k] / somme
             self.initial[k] = pi[k]
+
+        T = np.zeros((self.states_number, self.states_number))
+        for j in range (len(S)):
+            for t in range (1, self.states_number):
+                T += self.xi(S[j])[:][:][t] #C'est bien comme ça qu'on fixe juste une variable et qu'on prend le reste ?
+        somme = T.sum(1)
+        for k in range (self.states_number):
+            self.transitions[k] = T[k]/somme[k]
+                 
+
 
 
 
@@ -416,8 +426,8 @@ class HMM:
 
 
 '''
-test = HMM(2, 2, np.array([0.5, 0.5]), np.array([[0.9, 0.1], [0.1, 0.9]]), np.array([[0.5, 0.5], [0.7, 0.3]]))
-print(test.b([1, 0]))
+#test = HMM(2, 2, np.array([0.5, 0.5]), np.array([[0.9, 0.1], [0.1, 0.9]]), np.array([[0.5, 0.5], [0.7, 0.3]]))
+#print(test.b([1, 0]))
 
 #test.save("test_comment_ca_marche")
 '''
@@ -425,13 +435,13 @@ print(test.b([1, 0]))
 #print(test)
 
 #test = HMM.load("test1.txt")
-"""
+
 print(test.pfw([0, 0, 1, 0, 0]))
 print(test.pbw([0, 0, 1, 0, 0]))
 print(test.f([0, 0, 1, 0, 0]))
 print(test.b([0, 0, 1, 0, 0]))
 print(test.gamma([0, 0, 1, 0, 0]))
-"""
+
 
 #A = np.ones((3, 3, 3))
 
@@ -458,4 +468,7 @@ print(a)
 b = np.array([[1,0], [1,1]])
 print(b)
 print(a+b)
-"""
+'''
+t = np.array([[1,2,3], [1,0,0]])
+print (t.sum(1))
+print (t[0]/2)
