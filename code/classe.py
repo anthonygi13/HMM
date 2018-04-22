@@ -370,25 +370,30 @@ class HMM:
 
     def bw1(self, S):
         assert len(S) != 0
-        pi = np.zeros((self.states_number, 1))
-        somme = 0
-        for k in range (len(self.initial)):
-            for j in range (len(S)):
-                pi[k] += self.gamma(S[j])[k][0]
-        for i in range (len(pi)):
-            somme += pi[i]
-        for k in range (len(pi)):
-            pi[k] = pi[k] / somme
-            self.initial[k] = pi[k]
+        somme1 = 0
+        pi = np.zeros(self.states_number)
+        for j in range (len(S)):
+            pi += np.array(self.gamma(S[j])[:, 0])
+        somme = pi.sum()
+        self.__initial = pi/somme
+#        for i in range (len(pi)):
+ #           somme += pi[i]
+  #      for k in range (len(pi)):
+   #         pi[k] = pi[k] / somme
+    #        self.initial[k] = pi[k]
 
         T = np.zeros((self.states_number, self.states_number))
         for j in range (len(S)):
             for t in range (1, self.states_number):
-                T += self.xi(S[j])[:][:][t] #C'est bien comme ça qu'on fixe juste une variable et qu'on prend le reste ?
+                T += self.xi(S[j])[:,:,t]           #C'est bien comme ça qu'on fixe juste une variable et qu'on prend le reste ?
         somme = T.sum(1)
         for k in range (self.states_number):
             self.transitions[k] = T[k]/somme[k]
-                 
+
+
+        O = np.zeros((self.states_number, self.letters_number))
+
+
 
 
 
@@ -469,6 +474,10 @@ b = np.array([[1,0], [1,1]])
 print(b)
 print(a+b)
 '''
-t = np.array([[1,2,3], [1,0,0]])
-print (t.sum(1))
-print (t[0]/2)
+#t = np.array([1,2,3])
+#p = np.zeros(3)
+#print(p)
+#print (t/t.sum())
+test = HMM.load('test1.txt')
+test.bw1([[0,1]])
+print (test.initial)
