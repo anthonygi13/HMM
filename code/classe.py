@@ -384,14 +384,21 @@ class HMM:
 
         T = np.zeros((self.states_number, self.states_number))
         for j in range (len(S)):
-            for t in range (1, self.states_number):
+            for t in range (S[j] - 1):
                 T += self.xi(S[j])[:,:,t]           #C'est bien comme ça qu'on fixe juste une variable et qu'on prend le reste ?
         somme = T.sum(1)
         for k in range (self.states_number):
-            self.transitions[k] = T[k]/somme[k]
+            self.__transitions[k] = T[k]/somme[k]
 
 
         O = np.zeros((self.states_number, self.letters_number))
+        for j in range (len(S)):
+            for t in range (S[j]):
+                for o in range (self.letters_number):
+                    O[:, o] += self.gamma(S[j])[:, t]
+        somme = O.sum(1)
+        for k in range (self.states_number):
+            self.__emissions[k] = O[k]/somme[k]
 
 
 
