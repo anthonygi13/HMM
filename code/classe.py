@@ -402,11 +402,19 @@ class HMM:
             hmm = hmm.bw1(S)
         return hmm
 
+    @staticmethod
     def bw3(self,nbS, nbL, w, N, M):
+        max_logV = 0
+        hmm = None
         for i in range (M):
-            pass
+            h = self.bw2(nbS, nbL, w, N)
+            logV = hmm.logV([w])
+            if max_logV < logV:
+                max_logV = logV
+                hmm = h
+        return hmm
 
-
+            
 #4.5.2 : faire bw sur la séquence de mots
 #4.5.5 : predit ?
 
