@@ -372,11 +372,6 @@ class HMM:
             pi += np.array(self.gamma(S[j])[:, 0])
         somme = pi.sum()
         self.__initial = pi/somme
-#        for i in range (len(pi)):
- #           somme += pi[i]
-  #      for k in range (len(pi)):
-   #         pi[k] = pi[k] / somme
-    #        self.initial[k] = pi[k]
 
         T = np.zeros((self.states_number, self.states_number))
         for j in range (len(S)):
