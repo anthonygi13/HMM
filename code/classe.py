@@ -397,8 +397,8 @@ class HMM:
             self.__emissions[k] = O[k]/somme[k]
 
     def bw2(self, nbS, nbL, S, N):
-        hmm = self.hmm_random(nbL, nbS)
-        for i in range(N):
+        hmm = self.gen_HMM(nbL, nbS)
+        for i in range (N):
             hmm = hmm.bw1(S)
         return hmm
 
