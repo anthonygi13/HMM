@@ -379,11 +379,6 @@ class HMM:
             pi += np.array(self.gamma(S[j])[:, 0])
         somme = pi.sum()
         self.__initial = pi/somme
-#        for i in range (len(pi)):
- #           somme += pi[i]
-  #      for k in range (len(pi)):
-   #         pi[k] = pi[k] / somme
-    #        self.initial[k] = pi[k]
 
         T = np.zeros((self.states_number, self.states_number))
         for j in range (len(S)):
@@ -409,11 +404,19 @@ class HMM:
             hmm = hmm.bw1(S)
         return hmm
 
+    @staticmethod
     def bw3(self,nbS, nbL, w, N, M):
-        HMM = []
-        for i in range (1,M):
-            HMM += self.bw2(nbS, nbL, w, N)
+        max_logV = 0
+        hmm = None
+        for i in range (M):
+            h = self.bw2(nbS, nbL, w, N)
+            logV = hmm.logV([w])
+            if max_logV < logV:
+                max_logV = logV
+                hmm = h
+        return hmm
 
+            
 #4.5.2 : faire bw sur la séquence de mots
 #4.5.5 : predit ?
 
@@ -427,5 +430,14 @@ class HMM:
         emissions = list_rand_sum_2_dim(nbr_etat, nbr_lettre)
 
         return HMM(letters_number, states_number, initial[0], transitions, emissions)
+
+
+
+    def logV(self, S):
+        somme = 0
+        for w in S:
+            somme += self.pfw(w)
+        return somme
+
 
 
