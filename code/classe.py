@@ -358,10 +358,6 @@ class HMM:
         xi = np.ones((self.states_number, self.states_number, len(w)))
         f = self.f(w)
         b = self.b(w)
-        E = self.emissions(np.array(w))
-       # xi = xi * np.tile(f[:,:-1], self.states_number) *
-
-
         for t in range (len(w)-1):
             xi[:, :, t] = np.dot(f[:,t] * self.transitions * self.emissions[:,w[t+1]], b[:,t+1])
             xi[:, :, t] = xi[:,:,t] / np.sum(xi[t])
@@ -384,7 +380,7 @@ class HMM:
 
         T = np.zeros((self.states_number, self.states_number))
         for j in range (len(S)):
-            for t in range (S[j] - 1):
+            for t in range (len(S[j]) - 1):
                 T += self.xi(S[j])[:,:,t]           #C'est bien comme ça qu'on fixe juste une variable et qu'on prend le reste ?
         somme = T.sum(1)
         for k in range (self.states_number):
@@ -400,26 +396,20 @@ class HMM:
         for k in range (self.states_number):
             self.__emissions[k] = O[k]/somme[k]
 
-
-
-
-
-
-        '''for j in range (len(S)):
-            pi = pi + self.gamma(S[j][0])
-        self.initial = pi * (1/len(S))
-
-        transitions = np.zeros(self.states_number, self.states_number)
-        for j in range (len(S)):
-            for t in range (len(S[j])-1):
-                transition = transitions + self.xi(S[j])
-        self.transitions = transitions
-
-
     def bw2(self, nbS, nbL, S, N):
         hmm = self.hmm_random(nbL, nbS)
-        for i in range (N):
+        for i in range(N):
             hmm = hmm.bw1(S)
+        return hmm
+
+    def bw3(self,nbS, nbL, w, N, M):
+        HMM = []
+        for i in range (1,M):
+            HMM += self.bw2(nbS, nbL, w, N)
+
+#4.5.2 : faire bw sur la séquence de mots
+#4.5.5 : predit ?
+
 
 
     @staticmethod
@@ -485,6 +475,9 @@ print(a+b)
 #p = np.zeros(3)
 #print(p)
 #print (t/t.sum())
-test = HMM.load('test1.txt')
+'''test = HMM.load('test1.txt')
 test.bw1([[0,1]])
-print (test.initial)
+print (test.initial)'''
+
+t = np.array([[0,1],[2,2]])
+print(t.sum(1))
