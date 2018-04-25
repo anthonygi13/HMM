@@ -403,9 +403,9 @@ class HMM:
         return hmm
 
     def bw3(self,nbS, nbL, w, N, M):
-        HMM = []
-        for i in range (1,M):
-            HMM += self.bw2(nbS, nbL, w, N)
+        for i in range (M):
+            pass
+
 
 #4.5.2 : faire bw sur la séquence de mots
 #4.5.5 : predit ?
@@ -427,57 +427,11 @@ class HMM:
 
 
 
-'''
-#test = HMM(2, 2, np.array([0.5, 0.5]), np.array([[0.9, 0.1], [0.1, 0.9]]), np.array([[0.5, 0.5], [0.7, 0.3]]))
-#print(test.b([1, 0]))
-
-#test.save("test_comment_ca_marche")
-'''
-#test = HMM.hmm_random(2,3)
-#print(test)
-
-#test = HMM.load("test1.txt")
-
-print(test.pfw([0, 0, 1, 0, 0]))
-print(test.pbw([0, 0, 1, 0, 0]))
-print(test.f([0, 0, 1, 0, 0]))
-print(test.b([0, 0, 1, 0, 0]))
-print(test.gamma([0, 0, 1, 0, 0]))
+    def logV(self, S):
+        somme = 0
+        for w in S:
+            somme += self.pfw(w)
+        return somme
 
 
-#A = np.ones((3, 3, 3))
 
-B = np.array([[1, 4, 7],
-           [2, 5, 8],
-           [3, 6, 9]])
-
-print(np.tile(B, (3, 1, 1)))
-
-print(np.tile(B, (3, 1, 1)).T)
-
-"""
-A = np.array([[1, 1, 1],
-           [2, 2, 2],
-           [5, 5, 5]])
-"""
-#i = [0, 0, 0, 2]
-#print(A[i])
-"""
-print(A/np.array([1, 2, 3]))
-
-a = np.array([[2, 4], [1,2]])
-print(a)
-b = np.array([[1,0], [1,1]])
-print(b)
-print(a+b)
-'''
-#t = np.array([1,2,3])
-#p = np.zeros(3)
-#print(p)
-#print (t/t.sum())
-'''test = HMM.load('test1.txt')
-test.bw1([[0,1]])
-print (test.initial)'''
-
-t = np.array([[0,1],[2,2]])
-print(t.sum(1))
