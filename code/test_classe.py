@@ -15,6 +15,24 @@ class TestHMM(unittest.TestCase):
     def setUp(self):
         self.hmm1 = HMM.load('test1.txt') # lui pas de probleme
         self.hmm2 = HMM.load('test2.txt') # pas de probleme
+        self.A = HMM(2, 2, np.array([0.5, 0.5]), np.array([[0.9, 0.1], [0.1, 0.9]]),np.array([[0.5, 0.5], [0.7, 0.3]]))
+
+    def test_HMM(self):
+        self.assertRaises(ValueError, HMM, 0, 2, np.array([0.5, 0.5]), np.array([[0.9, 0.1], [0.1, 0.9]]),
+                          np.array([[0.5, 0.5], [0.7, 0.3]]))
+        self.assertRaises(ValueError, HMM, 2, 0, np.array([0.5, 0.5]), np.array([[0.9, 0.1], [0.1, 0.9]]),
+                          np.array([[0.5, 0.5], [0.7, 0.3]]))
+        self.assertRaises(TypeError, HMM, 2, 2, [0.5, 0.5], np.array([[0.9, 0.1], [0.1, 0.9]]),
+                          np.array([[0.5, 0.5], [0.7, 0.3]]))
+        self.assertRaises(ValueError, HMM, 2, 2, np.array([-0.5, 0.5]), np.array([[0.9, 0.1], [0.1, 0.9]]),
+                          np.array([[0.5, 0.5], [0.7, 0.3]]))
+        self.assertRaises(ValueError, HMM, 2, 2, np.array([0.5, 1.5]), np.array([[0.9, 0.1], [0.1, 0.9]]),
+                          np.array([[0.5, 0.5], [0.7, 0.3]]))
+        self.assertRaises(ValueError, HMM, 2, 2, np.array([0.5, 0.5]), np.array([[0.9, 0.1], [0.1, 0.8]]),
+                          np.array([[0.5, 0.5], [0.7, 0.3]]))
+        self.assertRaises(ValueError, HMM, 2, 2, np.array([0.5, 0.5]), np.array([[0.9, 0.1], [0.1, 0.9]]),
+                          np.array([[0.5, 0.5], [0.75, 0.3]]))
+
 
     def test_Error1(self):
         '''avec une somme >1 pour une ligne'''
@@ -38,10 +56,16 @@ class TestHMM(unittest.TestCase):
         self.assertTrue((self.hmm2.transitions == np.array([[ 0.8,  0.1 , 0.1], [ 0.8 , 0.1 , 0.1], [ 0.7 , 0.2 , 0.1]])).all())
         self.assertTrue((self.hmm2.emissions == np.array([[ 0.5 , 0.5 ], [ 0.6 , 0.4 ], [ 0.9 ,  0.1]])).all())
 
-    def test_generate_random(self):
-        sequence = self.hmm1.generate_random(5)
-        self.assertTrue(type(sequence) == np.ndarray)
-        self.assertTrue(sequence.shape[0] == 5)
+    def test_save_load(self):
+        h = self.A
+        h.save("./temp")
+        h = HMM.load("./temp")
+        self.assertEqual(h.letters_number, 2)
+        self.assertEqual(h.states_number, 2)
+        np.testing.assert_array_equal(h.initial, np.array([0.5, 0.5]))
+        np.testing.assert_array_equal(h.transitions, np.array([[0.9, 0.1], [0.1, 0.9]]))
+        np.testing.assert_array_equal(h.emissions, np.array([[0.5, 0.5], [0.7, 0.3]]))
+
 
     def test_save(self):
         self.hmm1.save('test_de_test1.txt')
@@ -51,6 +75,10 @@ class TestHMM(unittest.TestCase):
         self.assertTrue((self.hmm1.transitions == HMM.load("test_de_test1.txt").transitions).all())
         self.assertTrue((self.hmm1.emissions == HMM.load("test_de_test1.txt").emissions).all())
 
+    def test_generate_random(self):
+        sequence = self.hmm1.generate_random(5)
+        self.assertTrue(type(sequence) == np.ndarray)
+        self.assertTrue(sequence.shape[0] == 5)
 
     def test_pfw(self):
         self.assertTrue(self.hmm1.pfw([0]) == 0.6)
@@ -63,34 +91,58 @@ class TestHMM(unittest.TestCase):
         self.assertTrue(self.hmm1.pbw([1]) == 0.4)
         self.assertTrue(self.hmm1.pbw([0,0]) == 0.368)
 
+    def test_PFw_PBw(self):
+        h = self.A
+        self.assertEqual(h.pfw((0,)), 0.6)
+        self.assertEqual(h.pfw((1,)), 0.4)
+        for i in range(100):
+            w = h.generate_random(10)[1]
+            self.assertAlmostEqual(h.pfw(w), h.pbw(w))
+
+
+    def test_predit(self):
+        for i in range(100):
+            h = HMM.gen_HMM(2, 5)
+            w = h.generate_random(10)[1]
+            w0 = w + (0,)
+            w1 = w + (1,)
+            x = h.predit(w)
+            if h.PFw(w0) > h.PFw(w1):
+                self.assertEqual(0, x)
+            else:
+                self.assertEqual(1, x)
+
     def test_list_len1(self):
         L = list_rand_sum_2_dim(2,5)
+        print(L)
         sum = 0
         for i in range(5):
-            sum += L[0, i]
-        self.assertTrue(1 == sum)
+            sum += float(L[0, i])
+        self.assertTrue(np.isclose([sum], [1]))
+
 
         sum = 0
         for i in range(5):
-            sum += L[1, i]
-        self.assertTrue(1 == sum)
+            sum += float(L[1, i])
+        self.assertTrue(np.isclose([sum], [1]))
 
     def test_list_len2(self):
         L = list_rand_sum_2_dim(3,5)
+        print(L)
         sum = 0
         for i in range(5):
-            sum += L[0, i]
-        self.assertTrue(1 == sum)
+            sum += float(L[0, i])
+        self.assertTrue(np.isclose([sum], [1]))
 
         sum = 0
         for i in range(5):
-            sum += L[1, i]
-        self.assertTrue(1 == sum)
+            sum += float(L[1, i])
+        self.assertTrue(np.isclose([sum], [1]))
 
         sum = 0
         for i in range(5):
-            sum += L[2, i]
-        self.assertTrue(1 == sum)
+            sum += float(L[2, i])
+        self.assertTrue(np.isclose([sum], [1]))
 
 
 

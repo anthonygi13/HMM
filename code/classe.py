@@ -11,9 +11,8 @@ import random
 import time
 
 
-
-
 def list_rand_sum_2_dim(n, m):
+    '''creer un numpy aléatoire de dim n*m avec somme =1 sur toutes les lignes'''
     if type(n) != int:
         raise ValueError('le nombre de lettre doit etre un entier')
     if type(m) != int:
@@ -55,21 +54,26 @@ class HMM:
 
     # virer les Nones
     def __init__(self, letters_number, states_number, initial, transitions, emissions):
+
+
         # The number of letters
         if type(letters_number) != int or letters_number <= 0:
             raise ValueError("The letters number should be a positive integer")
         self.__letters_number = letters_number
+
         # The number of states
         if type(states_number) != int or states_number <= 0:
-            if type(self.letters_number) != int:
-                raise ValueError("The letters number should be a positive integer")
+            raise ValueError("The states number should be a positive integer")
         self.__states_number = states_number
+
         # The vector defining the initial weights
         self.check_initial(initial)
         self.__initial = initial
+
         # The array defining the transitions
         self.check_transitions(transitions)
         self.__transitions = transitions
+
         # The list of vectors defining the emissions
         self.check_emissions(emissions)
         self.__emissions = emissions
@@ -273,6 +277,7 @@ class HMM:
         return True
 
     def pfw(self, w):
+        '''fonction forward'''
         #check w
         #marche
         if len(w) == 0:
@@ -286,6 +291,7 @@ class HMM:
 
 
     def pbw(self,w):
+        '''fonction forward'''
         #check w
         #marche
         if len(w) == 0:
@@ -298,6 +304,7 @@ class HMM:
 
 
     def predit(self, w):
+        '''predit l'etat suivant'''
         #check w
         h = self.initial
         for i in range(1, len(w)):
@@ -382,7 +389,7 @@ class HMM:
         for j in range (len(S)):
             for t in range (len(S[j]) - 1):
                 T += self.xi(S[j])[:,:,t]           #C'est bien comme ça qu'on fixe juste une variable et qu'on prend le reste ?
-        somme = T.sum(1)
+        somme = T.sum(1) #somme sur les colonnes rend vecteur
         for k in range (self.states_number):
             self.__transitions[k] = T[k]/somme[k]
 
@@ -397,7 +404,7 @@ class HMM:
             self.__emissions[k] = O[k]/somme[k]
 
     def bw2(self, nbS, nbL, S, N):
-        hmm = self.hmm_random(nbL, nbS)
+        hmm = self.gen_HMM(nbL, nbS)
         for i in range(N):
             hmm = hmm.bw1(S)
         return hmm
@@ -410,74 +417,15 @@ class HMM:
 #4.5.2 : faire bw sur la séquence de mots
 #4.5.5 : predit ?
 
-
-
     @staticmethod
     def gen_HMM(nbr_lettre, nbr_etat): #faire des checks sur les parametres
+        '''genere un HMM aléatoire avec un nombre de lettre et d'etat en entree'''
         letters_number = nbr_lettre
         states_number = nbr_etat
         initial = list_rand_sum_2_dim(1, nbr_etat)
-        # print(initial)
         transitions = list_rand_sum_2_dim(nbr_etat, nbr_etat)
-        # print(transitions)
         emissions = list_rand_sum_2_dim(nbr_etat, nbr_lettre)
-        # print(emissions)
 
         return HMM(letters_number, states_number, initial[0], transitions, emissions)
 
 
-
-'''
-#test = HMM(2, 2, np.array([0.5, 0.5]), np.array([[0.9, 0.1], [0.1, 0.9]]), np.array([[0.5, 0.5], [0.7, 0.3]]))
-#print(test.b([1, 0]))
-
-#test.save("test_comment_ca_marche")
-'''
-#test = HMM.hmm_random(2,3)
-#print(test)
-
-#test = HMM.load("test1.txt")
-
-print(test.pfw([0, 0, 1, 0, 0]))
-print(test.pbw([0, 0, 1, 0, 0]))
-print(test.f([0, 0, 1, 0, 0]))
-print(test.b([0, 0, 1, 0, 0]))
-print(test.gamma([0, 0, 1, 0, 0]))
-
-
-#A = np.ones((3, 3, 3))
-
-B = np.array([[1, 4, 7],
-           [2, 5, 8],
-           [3, 6, 9]])
-
-print(np.tile(B, (3, 1, 1)))
-
-print(np.tile(B, (3, 1, 1)).T)
-
-"""
-A = np.array([[1, 1, 1],
-           [2, 2, 2],
-           [5, 5, 5]])
-"""
-#i = [0, 0, 0, 2]
-#print(A[i])
-"""
-print(A/np.array([1, 2, 3]))
-
-a = np.array([[2, 4], [1,2]])
-print(a)
-b = np.array([[1,0], [1,1]])
-print(b)
-print(a+b)
-'''
-#t = np.array([1,2,3])
-#p = np.zeros(3)
-#print(p)
-#print (t/t.sum())
-'''test = HMM.load('test1.txt')
-test.bw1([[0,1]])
-print (test.initial)'''
-
-t = np.array([[0,1],[2,2]])
-print(t.sum(1))
