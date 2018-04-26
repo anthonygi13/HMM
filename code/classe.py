@@ -217,6 +217,7 @@ class HMM:
 
     @staticmethod
     def draw_multinomial(array):
+        '''return à partir dune liste de proba, l'indice avec la proba correspondant à sa valeur'''
         if array.ndim != 1:
             raise ValueError("The parameter array should be a 1D array")
         HMM.check_probability_array(array)
@@ -283,10 +284,8 @@ class HMM:
         if len(w) == 0:
             raise ValueError("w ne doit pas être vide")
         f = self.initial * self.emissions[:, w[0]]
-        print (f)
         for i in range(1, len(w)):
             f = np.dot(f, self.transitions) * self.emissions[:, w[i]]
-        print(f)
         return np.sum(f)
 
 
@@ -299,7 +298,6 @@ class HMM:
         b = np.array([1]*self.states_number)
         for i in range(len(w)-2, -1, -1):
             b = np.dot(self.transitions, self.emissions[:, w[i+1]] * b)
-        print(b)
         return np.sum(self.initial * b * self.emissions[:,w[0]])
 
 
@@ -438,6 +436,5 @@ class HMM:
         for w in S:
             somme += self.pfw(w)
         return somme
-
 
 
