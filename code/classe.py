@@ -114,7 +114,7 @@ class HMM:
         '''verifie si la somme des valeurs sur une colonne est ==1 et qu'il n'y est pas de valeurs négatives'''
 
         if not isinstance(array, np.ndarray):
-            raise ValueError("The parameter array should be a np.ndarray")
+            raise TypeError("The parameter array should be a np.ndarray")
 
         if array.ndim == 1:
             sum = 0
@@ -234,10 +234,11 @@ class HMM:
     def generate_random(self, n):
         if type(n) != int:
             raise ValueError("n doit être un entier")
-        sequence = np.zeros(n)
+        #sequence = np.zeros(n)
+        sequence = ()
         actual_state = self.draw_multinomial(self.initial)
         for i in range(n):
-            sequence[i] = self.draw_multinomial(self.emissions[actual_state])
+            sequence  += (self.draw_multinomial(self.emissions[actual_state]),)
             actual_state = self.draw_multinomial(self.transitions[actual_state])
         return sequence
 
