@@ -5,6 +5,7 @@
 ###########################
 
 # faire un assert que les lettres du mots w c bien dans les observables
+# assert du type de w aussi
 
 import numpy as np
 import random
@@ -335,7 +336,7 @@ class HMM:
         return chemin[np.argmax(p)]
 
 
-    def f(self, w):
+    def f(self, w): # verifier type de w
         if len(w) == 0:
             raise ValueError("w ne doit pas être vide")
         f = np.zeros((self.states_number, len(w)))
@@ -396,7 +397,6 @@ class HMM:
         somme = T.sum(1) #somme sur les colonnes rend vecteur
         for k in range (self.states_number):
             self.__transitions[k] = T[k]/somme[k]
-
 
         O = np.zeros((self.states_number, self.letters_number))
         for j in range (len(S)):
