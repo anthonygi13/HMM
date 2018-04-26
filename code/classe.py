@@ -235,7 +235,6 @@ class HMM:
     def generate_random(self, n):
         if type(n) != int:
             raise ValueError("n doit être un entier")
-        #sequence = np.zeros(n)
         sequence = ()
         actual_state = self.draw_multinomial(self.initial)
         for i in range(n):
@@ -411,13 +410,6 @@ class HMM:
 
 
 
-
-#                for o in range (self.letters_number):
- #                   O[:, o] += self.gamma(S[j])[:, t]
-  #      somme = O.sum(1)
-   #     for k in range (self.states_number):
-    #        self.__emissions[k] = O[k]/somme[k]
-
     def bw2(self, nbS, nbL, S, N):
         hmm = self.gen_HMM(nbL, nbS)
         for i in range (N):
@@ -474,11 +466,6 @@ class HMM:
         return hmm
 
 
-
-
-#4.5.2 : faire bw sur la séquence de mots
-#4.5.5 : predit ?
-
     @staticmethod
     def gen_HMM(nbr_lettre, nbr_etat): #faire des checks sur les parametres
         '''genere un HMM aléatoire avec un nombre de lettre et d'etat en entree'''
@@ -498,12 +485,28 @@ class HMM:
             somme += self.pfw(w)
         return somme
 
+    @staticmethod
+    def num_to_lettre(n):
+        if type(n) != int:
+            raise TypeError('le numero doit etre un entier')
+        if n < 0 or n > 25:
+            raise ValueError('le numero doit etre compris entre 0 et 25')
 
-A = np.array([[[1, 1, 1], [1, 1, 1], [1, 1, 1]], [[1, 1, 1], [1, 1, 1], [1, 1, 1]], [[1, 1, 1], [1, 1, 1], [1, 1, 1]]])
-B = np.array([[1, 2, 3], [4, 5, 6], [7, 8, 9]])
-#print(A)
-#print(B)
-#print(A * B)
-H = HMM.load('test1.txt')
-print(H.xi([0,1,0]))
-print(H.xi2([0,1,0]))
+        alphabet =['a','b','c','d','e','f','g','h','i','j','k','l','m','n','o','p','q','r','s','t','u','v','w','x','y','z']
+
+        return alphabet[n]
+
+
+    @staticmethod
+    def lettre_to_num(lettre):
+        alphabet = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't',
+                    'u', 'v', 'w', 'x', 'y', 'z']
+        if type(lettre) != str:
+            raise TypeError('la lettre doit etre un caractere')
+        if lettre not in alphabet:
+            raise ValueError('la lettre doit etre dans l\'alphabet' )
+
+        return alphabet.index(lettre)
+
+
+
