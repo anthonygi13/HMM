@@ -157,6 +157,17 @@ class HMM:
         if tableau.shape[0] != nb_lignes or tableau.shape[1] != nb_colonnes:
             raise ValueError("Le tableau est de mauvaises dimensions")
 
+
+    def check_w(self, w):
+        if type(w) != tuple:
+            raise TypeError("w doit etre un tuple")
+
+        for x in w:
+            if type(x) != int:
+                raise ValueError('les etats doivent etre des entiers')
+            if x >= self.letters_number:
+                raise ValueError("tout les elements doivent appartenir aux observables")
+
     @transitions.setter
     def transitions(self, value):
         self.check_transitions(value)
@@ -392,7 +403,7 @@ class HMM:
         T = np.zeros((self.states_number, self.states_number))
         for j in range (len(S)):
             for t in range (len(S[j]) - 1):
-                T += self.xi(S[j])[:,:,t]           #C'est bien comme ça qu'on fixe juste une variable et qu'on prend le reste ?
+                T += self.xi(S[j])[:,:,t]
         somme = T.sum(1) #somme sur les colonnes rend vecteur
         for k in range (self.states_number):
             self.__transitions[k] = T[k]/somme[k]
@@ -404,9 +415,9 @@ class HMM:
             for t in range (len(S[j])):
                 O[:, S[j][t]] += gamma[:,t]
         somme = O.sum(1)
+        #print("s", somme)
         for k in range(self.states_number):
             self.__emissions[k] = O[k] / somme[k]
-
 
 
     def bw2(self, nbS, nbL, S, N):
@@ -509,3 +520,12 @@ class HMM:
 
 
 
+
+A = np.array([[[1, 1, 1], [1, 1, 1], [1, 1, 1]], [[1, 1, 1], [1, 1, 1], [1, 1, 1]], [[1, 1, 1], [1, 1, 1], [1, 1, 1]]])
+B = np.array([[1, 2, 3], [4, 5, 6], [7, 8, 9]])
+#print(A)
+#print(B)
+#print(A * B)
+H = HMM.load('test1.txt')
+H.bw1([(0,1)])
+print (H.transitions)
