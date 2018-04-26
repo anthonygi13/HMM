@@ -392,7 +392,7 @@ class HMM:
         T = np.zeros((self.states_number, self.states_number))
         for j in range (len(S)):
             for t in range (len(S[j]) - 1):
-                T += self.xi(S[j])[:,:,t]           #C'est bien comme ça qu'on fixe juste une variable et qu'on prend le reste ?
+                T += self.xi(S[j])[:,:,t]
         somme = T.sum(1) #somme sur les colonnes rend vecteur
         for k in range (self.states_number):
             self.__transitions[k] = T[k]/somme[k]
@@ -401,13 +401,13 @@ class HMM:
         O = np.zeros((self.states_number, self.letters_number))
         for j in range (len(S)):
             for t in range (len(S[j])):
-                for l in range (self.letters_number):
-                    if l == S[j][t]:
-                        O[:, l] += self.gamma(S[j])[:, t]
+                #print('gamma', self.gamma(S[j]))
+                O[:, S[j][t]] += self.gamma(S[j])[:, t]
+                #print('O', O)
         somme = O.sum(1)
+        #print("s", somme)
         for k in range(self.states_number):
             self.__emissions[k] = O[k] / somme[k]
-
 
 
     def bw2(self, nbS, nbL, S, N):
@@ -510,3 +510,12 @@ class HMM:
 
 
 
+
+A = np.array([[[1, 1, 1], [1, 1, 1], [1, 1, 1]], [[1, 1, 1], [1, 1, 1], [1, 1, 1]], [[1, 1, 1], [1, 1, 1], [1, 1, 1]]])
+B = np.array([[1, 2, 3], [4, 5, 6], [7, 8, 9]])
+#print(A)
+#print(B)
+#print(A * B)
+H = HMM.load('test1.txt')
+H.bw1([(0,1)])
+print (H.transitions)
