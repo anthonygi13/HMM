@@ -367,7 +367,7 @@ class HMM:
         b = self.b(w)
         for t in range (len(w)-1):
             xi[:, :, t] = np.dot(f[:,t] * self.transitions * self.emissions[:,w[t+1]], b[:,t+1])
-            xi[:, :, t] = xi[:,:,t] / np.sum(xi[t])
+            xi[:, :, t] = xi[:,:,t] / np.sum(xi[:, :, t])
         return xi
 
 
@@ -391,12 +391,22 @@ class HMM:
 
         O = np.zeros((self.states_number, self.letters_number))
         for j in range (len(S)):
-            for t in range (S[j]):
-                for o in range (self.letters_number):
-                    O[:, o] += self.gamma(S[j])[:, t]
+            for t in range (len(S[j])):
+                for l in range (self.letters_number):
+                    if l == S[j][t]:
+                        O[:, l] += self.gamma(S[j])[:, t]
         somme = O.sum(1)
-        for k in range (self.states_number):
-            self.__emissions[k] = O[k]/somme[k]
+        for k in range(self.states_number):
+            self.__emissions[k] = O[k] / somme[k]
+
+
+
+
+#                for o in range (self.letters_number):
+ #                   O[:, o] += self.gamma(S[j])[:, t]
+  #      somme = O.sum(1)
+   #     for k in range (self.states_number):
+    #        self.__emissions[k] = O[k]/somme[k]
 
     def bw2(self, nbS, nbL, S, N):
         hmm = self.gen_HMM(nbL, nbS)
@@ -440,4 +450,6 @@ class HMM:
         return somme
 
 
-
+test = HMM.load("test1.txt")
+test.bw1([[0,1]])
+print (test.emissions)
