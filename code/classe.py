@@ -358,7 +358,7 @@ class HMM:
         # check w
         f = self.f(w)
         b = self.b(w)
-        return (f * b) / np.einsum('ji,ji->i', b, f)
+        return (f * b) / np.einsum('kt,kt->t', b, f)
 
     def xi(self,w):
         f = self.f(w)[:, :-1]
@@ -400,10 +400,9 @@ class HMM:
 
         O = np.zeros((self.states_number, self.letters_number))
         for j in range (len(S)):
+            gamma = self.gamma(S[j])
             for t in range (len(S[j])):
-                for l in range (self.letters_number):
-                    if l == S[j][t]:
-                        O[:, l] += self.gamma(S[j])[:, t]
+                O[:, S[j][t]] += gamma[:,t]
         somme = O.sum(1)
         for k in range(self.states_number):
             self.__emissions[k] = O[k] / somme[k]
