@@ -78,6 +78,7 @@ class HMM:
         self.check_emissions(emissions)
         self.__emissions = emissions
 
+
     @property
     def letters_number(self):
         return self.__letters_number
@@ -361,15 +362,22 @@ class HMM:
         return (f * b) / np.einsum('ji,ji->i', b, f)
 
     def xi(self,w):
-        xi = np.ones((self.states_number, self.states_number, len(w)))
-        f = self.f(w)
-        b = self.b(w)
+        f = self.f(w)[:, :-1]
+        b = self.b(w)[:, 1:]
+        emissions = self.emissions[:, w[1:]]
+        xi = np.einsum('kt,kl,lt,lt->klt', f, self.transitions, emissions, b)
+        v = np.einsum('kt,kl,lt,lt->t', f, self.transitions, emissions, b)
+        somme = np.tile(v, (self.states_number, self.states_number, 1))
+        xi = xi / somme
+        return xi
 
-
-
-        for t in range (len(w)-1):
-            xi[:, :, t] = np.dot(f[:,t] * self.transitions * self.emissions[:,w[t+1]], b[:,t+1])
-            xi[:, :, t] = xi[:,:,t] / np.sum(xi[:, :, t])
+    def xi2(self,w):
+        f = self.f(w)[:, :-1]
+        b = self.b(w)[:, 1:]
+        emissions = self.emissions[:, w[1:]]
+        xi = np.einsum('kt,kl,lt,lt->klt', f, self.transitions, emissions, b)
+        for t in range (xi.shape[2]):
+            xi[:,:,t] = xi[:,:,t]/np.sum(xi[:,:,t])
         return xi
 
 
@@ -491,3 +499,11 @@ class HMM:
         return somme
 
 
+A = np.array([[[1, 1, 1], [1, 1, 1], [1, 1, 1]], [[1, 1, 1], [1, 1, 1], [1, 1, 1]], [[1, 1, 1], [1, 1, 1], [1, 1, 1]]])
+B = np.array([[1, 2, 3], [4, 5, 6], [7, 8, 9]])
+#print(A)
+#print(B)
+#print(A * B)
+H = HMM.load('test1.txt')
+print(H.xi([0,1,0]))
+print(H.xi2([0,1,0]))
