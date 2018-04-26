@@ -283,10 +283,8 @@ class HMM:
         if len(w) == 0:
             raise ValueError("w ne doit pas être vide")
         f = self.initial * self.emissions[:, w[0]]
-        print (f)
         for i in range(1, len(w)):
             f = np.dot(f, self.transitions) * self.emissions[:, w[i]]
-        print(f)
         return np.sum(f)
 
 
@@ -299,7 +297,6 @@ class HMM:
         b = np.array([1]*self.states_number)
         for i in range(len(w)-2, -1, -1):
             b = np.dot(self.transitions, self.emissions[:, w[i+1]] * b)
-        print(b)
         return np.sum(self.initial * b * self.emissions[:,w[0]])
 
 
@@ -365,6 +362,9 @@ class HMM:
         xi = np.ones((self.states_number, self.states_number, len(w)))
         f = self.f(w)
         b = self.b(w)
+
+
+
         for t in range (len(w)-1):
             xi[:, :, t] = np.dot(f[:,t] * self.transitions * self.emissions[:,w[t+1]], b[:,t+1])
             xi[:, :, t] = xi[:,:,t] / np.sum(xi[:, :, t])
@@ -410,23 +410,62 @@ class HMM:
 
     def bw2(self, nbS, nbL, S, N):
         hmm = self.gen_HMM(nbL, nbS)
-        for i in range(N):
-            hmm = hmm.bw1(S)
+        for i in range (N):
+            hmm.bw1(S)
         return hmm
 
+
     @staticmethod
-    def bw3(self,nbS, nbL, w, N, M):
+    def bw3(self,nbS, nbL, S, N, M):
         max_logV = 0
         hmm = None
         for i in range (M):
-            h = self.bw2(nbS, nbL, w, N)
-            logV = hmm.logV([w])
+            h = self.bw2(nbS, nbL, S, N)
+            logV = hmm.logV(S)
             if max_logV < logV:
                 max_logV = logV
                 hmm = h
         return hmm
 
-            
+
+    def bw2_variante(self,nbS, nbL, S, limite, N=None):
+        hmm = self.gen_HMM(nbL, nbS)
+        logV  = hmm.logV(S)
+        compteur = 0
+        c = 0
+        while compteur <= 10:
+            if c != N :
+                break
+
+            hmm.bw1(S)
+            logV_new = hmm.logV(S)
+
+            if logV - logV_new < limite:
+                compteur += 1
+            else:
+                compteur = 0
+
+            logV = logV_new
+
+            if N is not None :
+                c += 1
+
+        return hmm
+
+    def bw3_variante(self,nbS, nbL, S, M, limite, N=None):
+        max_logV = 0
+        hmm = None
+        for i in range (M):
+            h = self.bw2_variante(nbS, nbL, S, limite, N)
+            logV = hmm.logV(S)
+            if max_logV < logV:
+                max_logV = logV
+                hmm = h
+        return hmm
+
+
+
+
 #4.5.2 : faire bw sur la séquence de mots
 #4.5.5 : predit ?
 
