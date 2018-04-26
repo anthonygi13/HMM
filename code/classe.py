@@ -157,6 +157,17 @@ class HMM:
         if tableau.shape[0] != nb_lignes or tableau.shape[1] != nb_colonnes:
             raise ValueError("Le tableau est de mauvaises dimensions")
 
+
+    def check_w(self, w):
+        if type(w) != tuple:
+            raise TypeError("w doit etre un tuple")
+
+        for x in w:
+            if type(x) != int:
+                raise ValueError('les etats doivent etre des entiers')
+            if x >= self.letters_number:
+                raise ValueError("tout les elements doivent appartenir aux observables")
+
     @transitions.setter
     def transitions(self, value):
         self.check_transitions(value)
