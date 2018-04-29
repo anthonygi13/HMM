@@ -9,6 +9,7 @@
 import numpy as np
 import random
 import time
+import copy
 
 
 def list_rand_sum_2_dim(n, m):
@@ -325,25 +326,34 @@ class HMM:
 
     def viterbi(self, w):
         #check w
-        chemin = []
+        chemin_1 = []
+        chemin_2 = []
         liste_etats = []
-        p = self.initial * self.emissions[:,w[0]]
+        p_1 = self.initial * self.emissions[:,w[0]]
+        p_2 = self.initial * self.emissions[:,w[0]]
         for i in range(self.states_number):
-            chemin += [[i]]
+            chemin_1 += [[i]]
+            chemin_2 += [[i]]
             liste_etats += [i]
-        for i in range(len(w)):
-            for k in range (len(liste_etats)):
+
+        for i in range(1,len(w)):
+            for k in range (self.states_number):
+
                 m = 0
                 j_retenu = 0
-                for j in range(len(p)):
+                for j in range(self.states_number):
                     a = m
-                    b = p[j] * self.transitions(liste_etats[j], k)
+                    b = p_1[j] * self.transitions[j, k]
                     m = max(a,b)
-                    p[i] = m * self.emissions(k, w[i])
                     if m == b :
                         j_retenu = j
-                chemin += chemin[j_retenu] + [k]
-        return chemin[np.argmax(p)]
+                chemin_2[k] = chemin_1[j_retenu] + [k]
+                p_2[k] = m * self.emissions[k, w[i]]
+            chemin_1 = copy.deepcopy(chemin_2)
+            p_1 = copy.deepcopy(p_2)
+        print('p',p_2)
+        return chemin_2[np.argmax(p_2)], np.max(p_2)
+
 
 
     def f(self, w):
@@ -529,3 +539,7 @@ B = np.array([[1, 2, 3], [4, 5, 6], [7, 8, 9]])
 H = HMM.load('test1.txt')
 H.bw1([(0,1)])
 print (H.transitions)
+C = [1,2,3]
+D = copy.deepcopy(C)
+C.append(2)
+print(D)
