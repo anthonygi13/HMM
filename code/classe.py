@@ -353,7 +353,7 @@ class HMM:
             chemin_1 = copy.deepcopy(chemin_2)
             p_1 = copy.deepcopy(p_2)
         print('p',p_2)
-        return chemin_2[np.argmax(p_2)], np.max(p_2)
+        return chemin_2[np.argmax(p_2)], np.log(np.max(p_2))
 
 
     def f(self, w): # verifier type de w
@@ -403,9 +403,11 @@ class HMM:
 
     def bw1(self, S):
         assert len(S) != 0
+
         pi = np.zeros(self.states_number)
         for j in range (len(S)):
             pi += np.array(self.gamma(S[j])[:, 0])
+
 
         T = np.zeros((self.states_number, self.states_number))
         for j in range (len(S)):
@@ -426,6 +428,7 @@ class HMM:
 
         somme = O.sum(1)
         self.emissions = (O.T / somme).T
+
 
 
     def bw2(self, nbS, nbL, S, N):
@@ -498,9 +501,10 @@ class HMM:
 
 
     def logV(self, S):
+        # il est ou le log ?
         somme = 0
         for w in S:
-            somme += self.pfw(w)
+            somme += np.log(self.pfw(w))
         return somme
 
     @staticmethod

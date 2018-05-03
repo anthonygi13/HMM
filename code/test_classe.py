@@ -15,6 +15,7 @@ class TestHMM(unittest.TestCase):
     def setUp(self):
         self.hmm1 = HMM.load('test1.txt') # lui pas de probleme
         self.hmm2 = HMM.load('test2.txt') # pas de probleme
+        self.hmm3 = HMM(2, 1, np.array([1]), np.array([[1]]), np.array([[0.4, 0.6]]))
         self.A = HMM(2, 2, np.array([0.5, 0.5]), np.array([[0.9, 0.1], [0.1, 0.9]]),np.array([[0.5, 0.5], [0.7, 0.3]]))
         self.B = HMM(2, 2, np.array([0.741, 0.259]), np.array([[0.0115, 0.9885], [0.5084, 0.4916]]),
                          np.array([[0.4547, 0.5453], [0.2089, 0.7911]]))
@@ -149,7 +150,7 @@ class TestHMM(unittest.TestCase):
         h = self.B
         w = (1, 1, 1, 1, 0, 1, 1, 0, 1, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1)
         (lc, p) = h.viterbi(w)
-        self.assertEqual(lc, (0, 1, 0, 1, 0, 1, 1, 0, 1, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1))
+        self.assertEqual(lc, [0, 1, 0, 1, 0, 1, 1, 0, 1, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1])
         self.assertAlmostEqual(p, -15.816435284201352)
 
 
@@ -162,9 +163,16 @@ class TestHMM(unittest.TestCase):
         np.testing.assert_allclose(h.emissions, np.array([[0.48, 0.52], [0.52336449, 0.47663551]]))
 
 
+    def test_logV(self):
+        h = self.hmm3
+        w = (0, 0, 1, 0, 1, 1, 0, 0, 1, 0)
+        self.assertAlmostEqual(h.logV([w]), 6*np.log(0.4) + 4*np.log(0.6))
+
     def tearDown(self):
         self.A = None
         self.B = None
+
+
 
 
 
