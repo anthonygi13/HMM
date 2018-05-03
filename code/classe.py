@@ -104,7 +104,7 @@ class HMM:
     @initial.setter
     def initial(self, values):
         self.check_initial(values)
-        self.__inital = values
+        self.__initial = values
 
     @staticmethod
     def check_initial(value):
@@ -356,7 +356,6 @@ class HMM:
         return chemin_2[np.argmax(p_2)], np.max(p_2)
 
 
-
     def f(self, w): # verifier type de w
         if len(w) == 0:
             raise ValueError("w ne doit pas être vide")
@@ -404,30 +403,29 @@ class HMM:
 
     def bw1(self, S):
         assert len(S) != 0
-        somme1 = 0
         pi = np.zeros(self.states_number)
         for j in range (len(S)):
             pi += np.array(self.gamma(S[j])[:, 0])
-        somme = pi.sum()
-        self.__initial = pi/somme
 
         T = np.zeros((self.states_number, self.states_number))
         for j in range (len(S)):
             for t in range (len(S[j]) - 1):
                 T += self.xi(S[j])[:,:,t]
-        somme = T.sum(1) #somme sur les colonnes rend vecteur
-        for k in range (self.states_number):
-            self.__transitions[k] = T[k]/somme[k]
 
         O = np.zeros((self.states_number, self.letters_number))
         for j in range (len(S)):
             gamma = self.gamma(S[j])
             for t in range (len(S[j])):
                 O[:, S[j][t]] += gamma[:,t]
+
+        somme = pi.sum()
+        self.initial = pi / somme
+
+        somme = T.sum(1)
+        self.transitions = (T.T / somme).T
+
         somme = O.sum(1)
-        #print("s", somme)
-        for k in range(self.states_number):
-            self.__emissions[k] = O[k] / somme[k]
+        self.emissions = (O.T / somme).T
 
 
     def bw2(self, nbS, nbL, S, N):
@@ -533,6 +531,8 @@ class HMM:
 
 A = np.array([[[1, 1, 1], [1, 1, 1], [1, 1, 1]], [[1, 1, 1], [1, 1, 1], [1, 1, 1]], [[1, 1, 1], [1, 1, 1], [1, 1, 1]]])
 B = np.array([[1, 2, 3], [4, 5, 6], [7, 8, 9]])
+print((B.T/np.array([2, 4, 8])).T)
+
 #print(A)
 #print(B)
 #print(A * B)
