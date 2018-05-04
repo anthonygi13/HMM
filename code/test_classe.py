@@ -21,6 +21,7 @@ class TestHMM(unittest.TestCase):
                          np.array([[0.4547, 0.5453], [0.2089, 0.7911]]))
 
     def test_HMM(self):
+        '''test insertion HMM'''
         self.assertRaises(ValueError, HMM, 0, 2, np.array([0.5, 0.5]), np.array([[0.9, 0.1], [0.1, 0.9]]),
                           np.array([[0.5, 0.5], [0.7, 0.3]]))
         self.assertRaises(ValueError, HMM, 2, 0, np.array([0.5, 0.5]), np.array([[0.9, 0.1], [0.1, 0.9]]),
@@ -173,10 +174,5 @@ class TestHMM(unittest.TestCase):
         self.B = None
 
 
-
-
-
-
 if __name__ == "__main__":
     unittest.main()
-

@@ -4,8 +4,7 @@
 # La communauté de l'info #
 ###########################
 
-# faire un assert que les lettres du mots w c bien dans les observables
-# assert du type de w aussi
+
 
 import numpy as np
 import random
@@ -51,10 +50,6 @@ def list_rand_sum_2_dim(n, m):
 class HMM:
     """ Define an HMM"""
 
-    # mettre des raise au niveau du __init__
-    # faire des setter
-
-    # virer les Nones
     def __init__(self, letters_number, states_number, initial, transitions, emissions):
 
 
@@ -224,6 +219,7 @@ class HMM:
         return HMM(letters_number, states_number, initial, transitions, emissions)
 
     def __str__(self):
+        '''affiche HMM'''
         return 'The number of letters : ' + str(self.__letters_number) + '\n' + ' The number of states : ' + str(
             self.__states_number) + '\n' + ' The initial vector : ' + str(
             self.__initial) + '\n' + ' The internal transitions : ' + '\n' + str(
@@ -231,7 +227,7 @@ class HMM:
 
     @staticmethod
     def draw_multinomial(array):
-        '''return à partir dune liste de proba, l'indice avec la proba correspondant à sa valeur'''
+        '''return à partir d une liste de proba, l'indice avec la proba correspondant à sa valeur'''
         if array.ndim != 1:
             raise ValueError("The parameter array should be a 1D array")
         HMM.check_probability_array(array)
@@ -294,7 +290,6 @@ class HMM:
     def pfw(self, w):
         '''fonction forward'''
         #check w
-        #marche
         if len(w) == 0:
             raise ValueError("w ne doit pas être vide")
         f = self.initial * self.emissions[:, w[0]]
@@ -306,7 +301,6 @@ class HMM:
     def pbw(self,w):
         '''fonction forward'''
         #check w
-        #marche
         if len(w) == 0:
             raise ValueError("w ne doit pas être vide")
         b = np.array([1]*self.states_number)
@@ -501,7 +495,7 @@ class HMM:
 
 
     def logV(self, S):
-        # il est ou le log ?
+        ''' calcul de la log vraisemblance'''
         somme = 0
         for w in S:
             somme += np.log(self.pfw(w))
@@ -509,6 +503,7 @@ class HMM:
 
     @staticmethod
     def num_to_lettre(n):
+        '''convertir un numero en lettre'''
         if type(n) != int:
             raise TypeError('le numero doit etre un entier')
         if n < 0 or n > 25:
@@ -521,6 +516,7 @@ class HMM:
 
     @staticmethod
     def lettre_to_num(lettre):
+        '''convertir une lettre en numero'''
         alphabet = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't',
                     'u', 'v', 'w', 'x', 'y', 'z']
         if type(lettre) != str:
