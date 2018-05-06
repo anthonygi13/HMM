@@ -218,9 +218,9 @@ class HMM:
         :return: Le HMM correspondant en affichant le nom des différentes entrées
         """
         return 'The number of letters : ' + str(self.__letters_number) + '\n' + ' The number of states : ' + str(
-            self.__states_number) + '\n' + ' The initial vector : ' + str(
-            self.__initial) + '\n' + ' The internal transitions : ' + '\n' + str(
-            self.__transitions) + '\n' + ' The emissions : ' + '\n' + str(self.__emissions)
+            self.__states_number) + '\n' + 'The initial vector : ' + str(
+            self.__initial) + '\n' + 'The internal transitions : ' + '\n' + str(
+            self.__transitions) + '\n' + 'The emissions : ' + '\n' + str(self.__emissions)
 
     @staticmethod
     def draw_multinomial(array):
@@ -245,7 +245,7 @@ class HMM:
     def generate_random(self, n):
         """
         :param n: Longueur souhaitée de la liste
-        :return: Une liste d'oservables de longueur n où chaque observable est choisit avec une probabilité
+        :return: Un tuple d'oservables de longueur n où chaque observable est choisit avec une probabilité
         égale à sa probabilité correspondante
         """
         if type(n) != int:
@@ -307,7 +307,7 @@ class HMM:
 
     def pfw(self, w):
         """""
-        :param w: Liste d'observables
+        :param w: tuple d'observables
         :return: Probabilité d'obtenir cette liste
         """
         self.check_w(w)
@@ -318,7 +318,7 @@ class HMM:
 
     def pbw(self, w):
         """
-        :param w: Liste d'observables
+        :param w: tuple d'observables
         :return: Probabilité d'obtenir cette liste
         """
         self.check_w(w)
@@ -329,7 +329,7 @@ class HMM:
 
     def predit(self, w):
         """
-        :param w: Liste d'observables
+        :param w: tuple d'observables
         :return: L'observable ayant la plus grande probabilité d'apparaitre ensuite
         """
         self.check_w(w)
@@ -341,7 +341,7 @@ class HMM:
 
     def viterbi(self, w):
         """
-        :param w: Une liste d'observables
+        :param w: tuple d'observables
         :return: La liste d'états la plus probable correspondant à ce chemin
         """
         self.check_w(w)
@@ -372,7 +372,7 @@ class HMM:
 
     def f(self, w):
         """
-        :param w: Liste d'observable
+        :param w: tuple d'observable
         :return: Matrice de dimension nb_d'etats * len(w) correspondant au f du polycopié 4.4
         """
         f = np.zeros((self.states_number, len(w)))
@@ -383,7 +383,7 @@ class HMM:
 
     def b(self, w):
         """
-        :param w: Liste d'observable
+        :param w: tuple d'observable
         :return: Matrice de dimension nb_d'etats * len(w) correspondant au b du polycopié 4.4
         """
         b = np.zeros((self.states_number, len(w)))
@@ -394,7 +394,7 @@ class HMM:
 
     def gamma(self, w):
         """
-        :param w: Liste d'observable
+        :param w: tuple d'observable
         :return: Matrice de dimension nb_d'etats * len(w) correspondant au gamma du polycopié 4.4
         """
         f = self.f(w)
@@ -403,7 +403,7 @@ class HMM:
 
     def xi(self, w):
         """
-        :param w: Liste d'observable
+        :param w: tuple d'observable
         :return: Matrice de dimension nb_d'etats * nb_d'etats * len(w) correspondant au xi du polycopié 4.4, sans boucle
         """
         f = self.f(w)[:, :-1]
@@ -417,7 +417,7 @@ class HMM:
 
     def xi2(self, w):
         """
-        :param w: Liste d'observable
+        :param w: tuple d'observable
         :return: Matrice de dimension nb_d'etats * nb_d'etats * len(w) correspondant au xi du polycopié 4.4
         """
         f = self.f(w)[:, :-1]
@@ -430,7 +430,7 @@ class HMM:
 
     def bw1(self, S):
         """
-        :param S: Liste de liste d'observables
+        :param S: Liste de tuple d'observables
         :return: Modifie les valeurs des matrices du HMM pour augmenter la vraisemblance de S
         """
         if type(S) != list:
@@ -460,7 +460,7 @@ class HMM:
         """
         :param nbS: Nombre d'états
         :param nbL: Nombre de sommets
-        :param S: Liste de Liste d'observables
+        :param S: Liste de tuple d'observables
         :param N: Entier
         :return: Un HMM généré aléatoirement à nbS états et nbL sommets mis à jour N fois grâce à bw1 pour augmenter
         la vraisemblance
@@ -477,7 +477,7 @@ class HMM:
         """
         :param nbS: Nombre d'états
         :param nbL: Nombre de sommets
-        :param S: Liste de Liste d'observables
+        :param S: Liste de tuple d'observables
         :param N: Entier
         :param M: Entier
         :return: Le HHMi avec 0 <= i <= M-1 qui maximise la vraisemblance de S
@@ -554,7 +554,7 @@ class HMM:
 
     def logV(self, S):
         """
-        :param S: Liste de liste d'observables
+        :param S: Liste de tuple d'observables
         :return: La log vraisemblance de S
         """
         somme = 0
