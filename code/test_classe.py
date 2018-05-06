@@ -79,26 +79,29 @@ class TestHMM(unittest.TestCase):
         self.assertTrue((self.hmm1.transitions == HMM.load("test_de_test1.txt").transitions).all())
         self.assertTrue((self.hmm1.emissions == HMM.load("test_de_test1.txt").emissions).all())
 
+
     def test_generate_random(self):
         sequence = self.hmm1.generate_random(5)
         self.assertTrue(type(sequence) == tuple)
         self.assertTrue(len(sequence) == 5)
 
+
     def test_pfw(self):
-        self.assertTrue(self.hmm1.pfw([0]) == 0.6)
-        self.assertTrue(self.hmm1.pfw([1]) == 0.4)
-        self.assertTrue(self.hmm1.pfw([0,0]) == 0.368)
+        self.assertTrue(self.hmm1.pfw((0,)) == 0.6)
+        self.assertTrue(self.hmm1.pfw((1,)) == 0.4)
+        self.assertTrue(self.hmm1.pfw((0, 0)) == 0.368)
 
 
     def test_pbw(self):
-        self.assertTrue(self.hmm1.pbw([0]) == 0.6)
-        self.assertTrue(self.hmm1.pbw([1]) == 0.4)
-        self.assertTrue(self.hmm1.pbw([0,0]) == 0.368)
+        self.assertTrue(self.hmm1.pbw((0,)) == 0.6)
+        self.assertTrue(self.hmm1.pbw((1,)) == 0.4)
+        self.assertTrue(self.hmm1.pbw((0, 0)) == 0.368)
+
 
     def test_PFw_PBw(self):
         h = self.A
-        self.assertEqual(h.pfw([0]), 0.6)
-        self.assertEqual(h.pfw([1]), 0.4)
+        self.assertEqual(h.pfw((0,)), 0.6)
+        self.assertEqual(h.pfw((1,)), 0.4)
         for i in range(100):
             w = h.generate_random(10)
             self.assertAlmostEqual(h.pfw(w), h.pbw(w))
