@@ -38,7 +38,6 @@ class HMM:
         self.check_emissions(emissions)
         self.__emissions = emissions
 
-
     @property
     def letters_number(self):
         return self.__letters_number
@@ -143,11 +142,11 @@ class HMM:
         if tableau.shape[0] != nb_lignes or tableau.shape[1] != nb_colonnes:
             raise ValueError("Le tableau est de mauvaises dimensions")
 
-
     def check_w(self, w):
         """
         :param w: Tuple
-        :return: Renvoie une erreur si w n'est pas un tuple ou s'il contient des éléments qui ne sont pas des observables
+        :return: Renvoie une erreur si w n'est pas un tuple ou s'il contient des éléments qui ne sont pas des
+        observables
         """
         if type(w) != tuple:
             raise TypeError("w doit etre un tuple")
@@ -223,7 +222,6 @@ class HMM:
             self.__initial) + '\n' + ' The internal transitions : ' + '\n' + str(
             self.__transitions) + '\n' + ' The emissions : ' + '\n' + str(self.__emissions)
 
-
     @staticmethod
     def draw_multinomial(array):
         """
@@ -244,7 +242,6 @@ class HMM:
                 return i
         return array.shape[1] - 1
 
-
     def generate_random(self, n):
         """
         :param n: Longueur souhaitée de la liste
@@ -261,7 +258,6 @@ class HMM:
             sequence += (self.draw_multinomial(self.emissions[actual_state]),)
             actual_state = self.draw_multinomial(self.transitions[actual_state])
         return sequence
-
 
     def save(self, address):
         """
@@ -293,7 +289,6 @@ class HMM:
             nfile.write("\n")
         nfile.close()
 
-
     def __eq__(self, hmm2):
         # Définition de l'égalité entre 2 HMM
         if not isinstance(hmm2, HMM):
@@ -310,7 +305,6 @@ class HMM:
             return False
         return True
 
-
     def pfw(self, w):
         """""
         :param w: Liste d'observables
@@ -322,18 +316,16 @@ class HMM:
             f = np.dot(f, self.transitions) * self.emissions[:, w[i]]
         return np.sum(f)
 
-
     def pbw(self, w):
         """
         :param w: Liste d'observables
         :return: Probabilité d'obtenir cette liste
         """
         self.check_w(w)
-        b = np.array([1]*self.states_number)
-        for i in range(len(w)-2, -1, -1):
-            b = np.dot(self.transitions, self.emissions[:, w[i+1]] * b)
-        return np.sum(self.initial * b * self.emissions[:,w[0]])
-
+        b = np.array([1] * self.states_number)
+        for i in range(len(w) - 2, -1, -1):
+            b = np.dot(self.transitions, self.emissions[:, w[i + 1]] * b)
+        return np.sum(self.initial * b * self.emissions[:, w[0]])
 
     def predit(self, w):
         """
@@ -347,7 +339,6 @@ class HMM:
         p = np.dot(h, self.emissions)
         return np.argmax(p)
 
-
     def viterbi(self, w):
         """
         :param w: Une liste d'observables
@@ -357,28 +348,27 @@ class HMM:
         chemin_1 = []
         chemin_2 = []
         liste_etats = []
-        p_1 = self.initial * self.emissions[:,w[0]]
-        p_2 = self.initial * self.emissions[:,w[0]]
+        p_1 = self.initial * self.emissions[:, w[0]]
+        p_2 = self.initial * self.emissions[:, w[0]]
         for i in range(self.states_number):
             chemin_1 += [[i]]
             chemin_2 += [[i]]
             liste_etats += [i]
-        for i in range(1,len(w)):
-            for k in range (self.states_number):
+        for i in range(1, len(w)):
+            for k in range(self.states_number):
                 m = 0
                 j_retenu = 0
                 for j in range(self.states_number):
                     a = m
                     b = p_1[j] * self.transitions[j, k]
-                    m = max(a,b)
-                    if m == b :
+                    m = max(a, b)
+                    if m == b:
                         j_retenu = j
                 chemin_2[k] = chemin_1[j_retenu] + [k]
                 p_2[k] = m * self.emissions[k, w[i]]
             chemin_1 = copy.deepcopy(chemin_2)
             p_1 = copy.deepcopy(p_2)
         return chemin_2[np.argmax(p_2)], np.log(np.max(p_2))
-
 
     def f(self, w):
         """
@@ -388,7 +378,7 @@ class HMM:
         f = np.zeros((self.states_number, len(w)))
         f[:, 0] = self.initial * self.emissions[:, w[0]]
         for i in range(1, len(w)):
-            f[:, i] = np.dot(f[:, i-1], self.transitions) * self.emissions[:, w[i]]
+            f[:, i] = np.dot(f[:, i - 1], self.transitions) * self.emissions[:, w[i]]
         return f
 
     def b(self, w):
@@ -397,9 +387,9 @@ class HMM:
         :return: Matrice de dimension nb_d'etats * len(w) correspondant au b du polycopié 4.4
         """
         b = np.zeros((self.states_number, len(w)))
-        b[:, len(w)-1] = np.array([1]*self.states_number)
-        for i in range (len(w)-2, -1, -1):
-            b[:, i] = np.dot(self.transitions, self.emissions[:, w[i+1]] * b[:, i+1])
+        b[:, len(w) - 1] = np.array([1] * self.states_number)
+        for i in range(len(w) - 2, -1, -1):
+            b[:, i] = np.dot(self.transitions, self.emissions[:, w[i + 1]] * b[:, i + 1])
         return b
 
     def gamma(self, w):
@@ -411,7 +401,7 @@ class HMM:
         b = self.b(w)
         return (f * b) / np.einsum('kt,kt->t', b, f)
 
-    def xi(self,w):
+    def xi(self, w):
         """
         :param w: Liste d'observable
         :return: Matrice de dimension nb_d'etats * nb_d'etats * len(w) correspondant au xi du polycopié 4.4, sans boucle
@@ -425,7 +415,7 @@ class HMM:
         xi = xi / somme
         return xi
 
-    def xi2(self,w):
+    def xi2(self, w):
         """
         :param w: Liste d'observable
         :return: Matrice de dimension nb_d'etats * nb_d'etats * len(w) correspondant au xi du polycopié 4.4
@@ -434,10 +424,9 @@ class HMM:
         b = self.b(w)[:, 1:]
         emissions = self.emissions[:, w[1:]]
         xi = np.einsum('kt,kl,lt,lt->klt', f, self.transitions, emissions, b)
-        for t in range (xi.shape[2]):
-            xi[:,:,t] = xi[:,:,t]/np.sum(xi[:,:,t])
+        for t in range(xi.shape[2]):
+            xi[:, :, t] = xi[:, :, t] / np.sum(xi[:, :, t])
         return xi
-
 
     def bw1(self, S):
         """
@@ -451,17 +440,17 @@ class HMM:
         for w in S:
             self.check_w(w)
         pi = np.zeros(self.states_number)
-        for j in range (len(S)):
+        for j in range(len(S)):
             pi += np.array(self.gamma(S[j])[:, 0])
         T = np.zeros((self.states_number, self.states_number))
-        for j in range (len(S)):
-            for t in range (len(S[j]) - 1):
-                T += self.xi(S[j])[:,:,t]
+        for j in range(len(S)):
+            for t in range(len(S[j]) - 1):
+                T += self.xi(S[j])[:, :, t]
         O = np.zeros((self.states_number, self.letters_number))
-        for j in range (len(S)):
+        for j in range(len(S)):
             gamma = self.gamma(S[j])
-            for t in range (len(S[j])):
-                O[:, S[j][t]] += gamma[:,t]
+            for t in range(len(S[j])):
+                O[:, S[j][t]] += gamma[:, t]
         self.transitions = (T.T / T.sum(1)).T
         self.emissions = (O.T / O.sum(1)).T
         self.initial = pi / pi.sum()
@@ -479,10 +468,9 @@ class HMM:
         if type(N) != int or N < 0:
             raise ValueError("N doit être un entier positif")
         hmm = HMM.gen_HMM(nbL, nbS)
-        for i in range (N):
+        for i in range(N):
             hmm.bw1(S)
         return hmm
-
 
     @staticmethod
     def bw3(nbS, nbL, S, N, M):
@@ -498,14 +486,13 @@ class HMM:
             raise ValueError("M doit être un entier positif")
         max_logV = 0
         hmm = None
-        for i in range (M):
+        for i in range(M):
             h = HMM.bw2(nbS, nbL, S, N)
             logV = hmm.logV(S)
             if max_logV < logV:
                 max_logV = logV
                 hmm = h
         return hmm
-
 
     @staticmethod
     def bw2_variante(nbS, nbL, S, limite, N=None):
@@ -522,7 +509,7 @@ class HMM:
         compteur = 0
         c = 0
         while compteur <= 10:
-            if N is not None and c != N :
+            if N is not None and c != N:
                 break
             hmm.bw1(S)
             logV_new = hmm.logV(S)
@@ -531,7 +518,7 @@ class HMM:
             else:
                 compteur = 0
             logV = logV_new
-            if N is not None :
+            if N is not None:
                 c += 1
         return hmm
 
@@ -551,9 +538,8 @@ class HMM:
                 hmm = h
         return hmm
 
-
     @staticmethod
-    def gen_HMM(nbr_lettre, nbr_etat): #faire des checks sur les parametres
+    def gen_HMM(nbr_lettre, nbr_etat):  # faire des checks sur les parametres
         """
         :param nbr_lettre: Nombre souhaité s'observables
         :param nbr_etat: Nombre souhaité d'états
@@ -566,7 +552,6 @@ class HMM:
 
         return HMM(nbr_lettre, nbr_etat, initial[0], transitions, emissions)
 
-
     def logV(self, S):
         """
         :param S: Liste de liste d'observables
@@ -578,7 +563,6 @@ class HMM:
             somme += np.log(self.pfw(w))
         return somme
 
-
     @staticmethod
     def num_to_lettre(n):
         """
@@ -589,9 +573,9 @@ class HMM:
             raise TypeError('le numero doit etre un entier')
         if n < 0 or n > 25:
             raise ValueError('le numero doit etre compris entre 0 et 25')
-        alphabet =['a','b','c','d','e','f','g','h','i','j','k','l','m','n','o','p','q','r','s','t','u','v','w','x','y','z']
+        alphabet = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't',
+                    'u', 'v', 'w', 'x', 'y', 'z']
         return alphabet[n]
-
 
     @staticmethod
     def lettre_to_num(lettre):
@@ -604,9 +588,8 @@ class HMM:
         if type(lettre) != str:
             raise TypeError('la lettre doit etre un caractere')
         if lettre not in alphabet:
-            raise ValueError('la lettre doit etre dans l\'alphabet' )
+            raise ValueError('la lettre doit etre dans l\'alphabet')
         return alphabet.index(lettre)
-
 
     @staticmethod
     def list_rand_sum_2_dim(n, m):
