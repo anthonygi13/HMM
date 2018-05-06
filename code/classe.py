@@ -11,43 +11,38 @@ import time
 import copy
 
 
-def list_rand_sum_2_dim(n, m):
-    '''creer un numpy aléatoire de dim n*m avec somme =1 sur toutes les lignes'''
+def list_rand_sum_2_dim(n, m): # Crée un numpy aléatoire de dim n*m avec somme =1 sur toutes les lignes
+    """
+    :param n: nombre de lignes
+    :param m: nombre de colonnes
+    :return: un numpy aléatoire de dim n*m avec somme =1 sur toutes les lignes
+    """
     if type(n) != int:
         raise ValueError('le nombre de lettre doit etre un entier')
     if type(m) != int:
         raise ValueError('le nombre etat doit etre un entier')
-
     L = np.zeros((n, m-1))
-
-    for j in range(n): #j colonne
-        for i in range(m-1): #i sur la ligne
+    for j in range(n): # j colonne
+        for i in range(m-1): # i sur la ligne
             s = random.random()
             s = "%.3f" % s
             L[j, i] = (s)
-
     for i in range(n):
         L.sort()
-
     M = np.zeros((n, m))
-
-
-
-    for i in range(n): #pour chaque ligne
-        for j in range(0, m): #pour chaque colonne
+    for i in range(n): # Pour chaque ligne
+        for j in range(0, m): # Pour chaque colonne
             if j == m-1:
                 M[i, j] = 1 - L[i, j-1]
             elif j == 0:
                 M[i, j] = L[i, j]
             else :
                 M[i,j] = L[i, j] - L[i, j-1]
-
-
     return M
 
 
 class HMM:
-    """ Define an HMM"""
+    # Défint un HMM
 
     def __init__(self, letters_number, states_number, initial, transitions, emissions):
 
@@ -101,27 +96,32 @@ class HMM:
 
     @staticmethod
     def check_initial(value):
+        """
+        :param value: Vecteur d'initial
+        :return: Renvoie une erreur si le tableau n'est pas de dimension 1, à une valeur négative ou à une somme de
+        valeurs différente de 1.
+        """
         HMM.check_probability_array(value)
         if value.ndim != 1:
             raise ValueError("The parameter value should be a one dimension array")
 
     @staticmethod
     def check_probability_array(array):
-        '''verifie si la somme des valeurs sur une colonne est ==1 et qu'il n'y est pas de valeurs négatives'''
-
+        """
+        :param array: Tableau numpy
+        :return: Renvoie une erreur si la somme des valeurs sur une ligne ne vaut pas 1 et si'il y a des valeurs
+        négatives
+        """
         if not isinstance(array, np.ndarray):
             raise TypeError("The parameter array should be a np.ndarray")
-
         if array.ndim == 1:
             sum = 0
             for value in array:
                 if value < 0:
                     raise ValueError("The probabilities should be positive numbers")
                 sum += value
-
             if not np.isclose([sum], [1]):
                 raise ValueError("The probabilities sum should be equal to 1 for each lign")
-
         elif array.ndim == 2:
             for i in range(array.shape[0]):
                 sum = 0
@@ -131,22 +131,35 @@ class HMM:
                     sum += array[i, j]
                 if not np.isclose([sum], [1]):
                     raise ValueError("The probabilities sum should be equal to 1 for each lign")
-
         else:
             raise ValueError("The dimension of the parameter array should be 1 or 2")
 
     def check_transitions(self, value):
-        # verifie si la somme des valeurs sur une colonne est = 1 et qu'il n'y est pas de valeurs négatives dans tableau de transition
+        """
+        :param value: Matrice de transitions
+        :return: Renvoie une erreur si la somme des valeurs sur une ligne ne vaut pas 1 et si'il y a des valeurs
+        négatives
+        """
         self.check_dim(value, self.states_number, self.states_number)
         self.check_probability_array(value)
 
     def check_emissions(self, value):
-        # verifie si la somme des valeurs sur une colonne est = 1 et qu'il n'y est pas de valeurs négatives dans tableau de emission
+        """
+        :param value: Matrice d'émissions
+        :return: Renvoie une erreur si la somme des valeurs sur une ligne ne vaut pas 1 et si'il y a des valeurs
+        négatives
+        """
         self.check_dim(value, self.states_number, self.letters_number)
         self.check_probability_array(value)
 
     @staticmethod
     def check_dim(tableau, nb_lignes, nb_colonnes):
+        """
+        :param tableau: Tableau numpy
+        :param nb_lignes: Nombre de lignes attendues
+        :param nb_colonnes: Nombre de colonnes attendues
+        :return: Renvoie une erreur si les dimensions du tableau ne sont pas celles attendues
+        """
         if tableau.ndim != 2:
             raise ValueError("The parameter tableau should be a 2D array")
         if tableau.shape[0] != nb_lignes or tableau.shape[1] != nb_colonnes:
@@ -154,6 +167,10 @@ class HMM:
 
 
     def check_w(self, w):
+        """
+        :param w: Tuple
+        :return: Renvoie une erreur si w n'est pas un tuple ou s'il contient des éléments qui ne sont pas des observables
+        """
         if type(w) != tuple:
             print(w)
             print(type(w))
@@ -180,49 +197,46 @@ class HMM:
 
     @staticmethod
     def load(adr):
-        """charge un HMM depuis une adresse donnee"""
-
+        # Charge un HMM depuis une adresse donnee
+        """
+        :param adr: Nom d"un fichier texte contenant les données d'un HMM
+        :return: Un HMM
+        """
         data = open(adr, 'r')
         line = data.readline()
         hash_count = 0
-
         while hash_count <= 4:
             if line[0] == '#':
                 if hash_count == 0:
                     letters_number = int(data.readline())
-
                 if hash_count == 1:
                     states_number = int(data.readline())
-
                 if hash_count == 2:
                     initial = np.zeros((states_number))
                     for i in range(states_number):
                         initial[i] = float(data.readline())
-
                 if hash_count == 3:
                     transitions = np.zeros((states_number, states_number))
                     for i in range(states_number):
                         ligne = data.readline().split()
                         for j in range(len(ligne)):
                             transitions[i, j] = float(ligne[j])
-
                 if hash_count == 4:
                     emissions = np.zeros((states_number, letters_number))
                     for i in range(states_number):
                         ligne = data.readline().split()
                         for j in range(len(ligne)):
                             emissions[i, j] = float(ligne[j])
-
                 hash_count += 1
-
             line = data.readline()
-
         data.close()
-
         return HMM(letters_number, states_number, initial, transitions, emissions)
 
     def __str__(self):
-        '''affiche HMM'''
+        # Affiche le HMM
+        """
+        :return: Le HMM correspondant en affichant le nom des différentes entrées
+        """
         return 'The number of letters : ' + str(self.__letters_number) + '\n' + ' The number of states : ' + str(
             self.__states_number) + '\n' + ' The initial vector : ' + str(
             self.__initial) + '\n' + ' The internal transitions : ' + '\n' + str(
@@ -231,11 +245,13 @@ class HMM:
 
     @staticmethod
     def draw_multinomial(array):
-        '''return à partir d une liste de proba, l'indice avec la proba correspondant à sa valeur'''
+        """
+        :param array: Tableau de probabilités dont la somme des vleurs vaut 1
+        :return: Un indice du tableau avec une probabilité égale à la valeur correspondant à l'indice
+        """
         if array.ndim != 1:
             raise ValueError("The parameter array should be a 1D array")
         HMM.check_probability_array(array)
-
         random.seed(time.clock())
         random_number = random.random()
         probability_sum = 0
@@ -247,6 +263,11 @@ class HMM:
 
 
     def generate_random(self, n):
+        """
+        :param n: Longueur souhaitée de la liste
+        :return: Une liste d'oservables de longueur n où chaque observable est choisit avec une probabilité
+        égale à sa probabilité correspondante
+        """
         if type(n) != int:
             raise ValueError("n doit être un entier")
         if n < 0:
@@ -260,7 +281,10 @@ class HMM:
 
 
     def save(self, address):
-        '''sauvegarde un HMM'''
+        """
+        :param address: Nom du fichier
+        :return: HMM sous fichier texte nommé par address
+        """
         nfile = open(address, "w")
         nfile.write("# The number of letters\n")
         nfile.write(str(self.letters_number) + "\n")
@@ -279,11 +303,11 @@ class HMM:
             for j in range(len(self.emissions[0])):
                 nfile.write(str(self.emissions[i, j]) + " ")
             nfile.write("\n")
-
         nfile.close()
 
 
     def __eq__(self, hmm2):
+        # Définition de l'égalité entre 2 HMM
         if self.letters_number != hmm2.letters_number:
             return False
         if self.states_number != hmm2.states_number:
@@ -298,7 +322,10 @@ class HMM:
 
 
     def pfw(self, w):
-        '''fonction forward'''
+        """""
+        :param w: Liste d'observables
+        :return: Probabilité d'obtenir cette liste
+        """
         self.check_w(w)
         f = self.initial * self.emissions[:, w[0]]
         for i in range(1, len(w)):
@@ -306,8 +333,11 @@ class HMM:
         return np.sum(f)
 
 
-    def pbw(self,w):
-        '''fonction forward'''
+    def pbw(self, w):
+        """
+        :param w: Liste d'observables
+        :return: Probabilité d'obtenir cette liste
+        """
         self.check_w(w)
         b = np.array([1]*self.states_number)
         for i in range(len(w)-2, -1, -1):
@@ -316,7 +346,10 @@ class HMM:
 
 
     def predit(self, w):
-        '''predit l'etat suivant'''
+        """
+        :param w: Liste d'observables
+        :return: L'observable ayant la plus grande probabilité d'apparaitre ensuite
+        """
         self.check_w(w)
         h = self.initial
         for i in range(1, len(w)):
@@ -326,6 +359,10 @@ class HMM:
 
 
     def viterbi(self, w):
+        """
+        :param w: Une liste d'observables
+        :return: La liste d'états la plus probable correspondant à ce chemin
+        """
         self.check_w(w)
         chemin_1 = []
         chemin_2 = []
@@ -336,10 +373,8 @@ class HMM:
             chemin_1 += [[i]]
             chemin_2 += [[i]]
             liste_etats += [i]
-
         for i in range(1,len(w)):
             for k in range (self.states_number):
-
                 m = 0
                 j_retenu = 0
                 for j in range(self.states_number):
@@ -356,6 +391,10 @@ class HMM:
 
 
     def f(self, w):
+        """
+        :param w: Liste d'observable
+        :return: Matrice de dimension nb_d'etats * len(w) correspondant au f du polycopié 4.4
+        """
         f = np.zeros((self.states_number, len(w)))
         f[:, 0] = self.initial * self.emissions[:, w[0]]
         for i in range(1, len(w)):
@@ -363,6 +402,10 @@ class HMM:
         return f
 
     def b(self, w):
+        """
+        :param w: Liste d'observable
+        :return: Matrice de dimension nb_d'etats * len(w) correspondant au b du polycopié 4.4
+        """
         b = np.zeros((self.states_number, len(w)))
         b[:, len(w)-1] = np.array([1]*self.states_number)
         for i in range (len(w)-2, -1, -1):
@@ -370,11 +413,19 @@ class HMM:
         return b
 
     def gamma(self, w):
+        """
+        :param w: Liste d'observable
+        :return: Matrice de dimension nb_d'etats * len(w) correspondant au gamma du polycopié 4.4
+        """
         f = self.f(w)
         b = self.b(w)
         return (f * b) / np.einsum('kt,kt->t', b, f)
 
-    def xi(self, w):
+    def xi(self,w):
+        """
+        :param w: Liste d'observable
+        :return: Matrice de dimension nb_d'etats * nb_d'etats * len(w) correspondant au xi du polycopié 4.4, sans boucle
+        """
         f = self.f(w)[:, :-1]
         b = self.b(w)[:, 1:]
         emissions = self.emissions[:, w[1:]]
@@ -385,6 +436,10 @@ class HMM:
         return xi
 
     def xi2(self,w):
+        """
+        :param w: Liste d'observable
+        :return: Matrice de dimension nb_d'etats * nb_d'etats * len(w) correspondant au xi du polycopié 4.4
+        """
         f = self.f(w)[:, :-1]
         b = self.b(w)[:, 1:]
         emissions = self.emissions[:, w[1:]]
@@ -395,38 +450,42 @@ class HMM:
 
 
     def bw1(self, S):
+        """
+        :param S: Liste de liste d'observables
+        :return: Modifie les valeurs des matrices du HMM pour augmenter la vraisemblance de S
+        """
         if type(S) != list:
             raise TypeError("S doit être une liste")
         if len(S) == 0:
             raise ValueError("S ne doit pas être vide")
         for w in S:
             self.check_w(w)
-
         pi = np.zeros(self.states_number)
         for j in range (len(S)):
             pi += np.array(self.gamma(S[j])[:, 0])
-
-
         T = np.zeros((self.states_number, self.states_number))
         for j in range (len(S)):
             for t in range (len(S[j]) - 1):
                 T += self.xi(S[j])[:,:,t]
-
         O = np.zeros((self.states_number, self.letters_number))
         for j in range (len(S)):
             gamma = self.gamma(S[j])
             for t in range (len(S[j])):
                 O[:, S[j][t]] += gamma[:,t]
-
+        self.transitions = (T.T / T.sum(1)).T
+        self.emissions = (O.T / O.sum(1)).T
         self.initial = pi / pi.sum()
 
-        self.transitions = (T.T / T.sum(1)).T
-
-        self.emissions = (O.T / O.sum(1)).T
-
-
     @staticmethod
-    def bw2(nbS, nbL, S, N):
+    def bw2(self, nbS, nbL, S, N):
+        """
+        :param nbS: Nombre d'états
+        :param nbL: Nombre de sommets
+        :param S: Liste de Liste d'observables
+        :param N: Entier
+        :return: Un HMM généré aléatoirement à nbS états et nbL sommets mis à jour N fois grâce à bw1 pour augmenter
+        la vraisemblance
+        """
         hmm = HMM.gen_HMM(nbL, nbS)
         for i in range (N):
             hmm.bw1(S)
@@ -434,11 +493,19 @@ class HMM:
 
 
     @staticmethod
-    def bw3(self,nbS, nbL, S, N, M):
+    def bw3(nbS, nbL, S, N, M):
+        """
+        :param nbS: Nombre d'états
+        :param nbL: Nombre de sommets
+        :param S: Liste de Liste d'observables
+        :param N: Entier
+        :param M: Entier
+        :return: Le HHMi avec 0 <= i <= M-1 qui maximise la vraisemblance de S
+        """
         max_logV = 0
         hmm = None
         for i in range (M):
-            h = self.bw2(nbS, nbL, S, N)
+            h = HMM.bw2(nbS, nbL, S, N)
             logV = hmm.logV(S)
             if max_logV < logV:
                 max_logV = logV
@@ -448,6 +515,8 @@ class HMM:
 
     @staticmethod
     def bw2_variante(nbS, nbL, S, limite, N=None):
+        # Même fonction que bw2 mais s'arrête automatiquement lorsque la log vraisemblance entre deux mises à jour
+        # successives est inférieure au paramètre limite
         hmm = HMM.gen_HMM(nbL, nbS)
         logV = hmm.logV(S)
         compteur = 0
@@ -455,24 +524,21 @@ class HMM:
         while compteur <= 10:
             if c != N :
                 break
-
             hmm.bw1(S)
             logV_new = hmm.logV(S)
-
             if logV - logV_new < limite:
                 compteur += 1
             else:
                 compteur = 0
-
             logV = logV_new
-
             if N is not None :
                 c += 1
-
         return hmm
 
     @staticmethod
     def bw3_variante(nbS, nbL, S, M, limite, N=None):
+        # Même fonction que bw3 mais s'arrête automatiquement lorsque la log vraisemblance entre deux mises à jour
+        # successives est inférieure au paramètre limite
         max_logV = 0
         hmm = None
         for i in range(M):
@@ -486,18 +552,24 @@ class HMM:
 
     @staticmethod
     def gen_HMM(nbr_lettre, nbr_etat): #faire des checks sur les parametres
-        '''genere un HMM aléatoire avec un nombre de lettre et d'etat en entree'''
+        """
+        :param nbr_lettre: Nombre souhaité s'observables
+        :param nbr_etat: Nombre souhaité d'états
+        :return: un HMM généré aléatoirement avec nb_lettre observables et nb_ etats états
+        """
         letters_number = nbr_lettre
         states_number = nbr_etat
         initial = list_rand_sum_2_dim(1, nbr_etat)
         transitions = list_rand_sum_2_dim(nbr_etat, nbr_etat)
         emissions = list_rand_sum_2_dim(nbr_etat, nbr_lettre)
-
         return HMM(letters_number, states_number, initial[0], transitions, emissions)
 
 
     def logV(self, S):
-        ''' calcul de la log vraisemblance'''
+        """
+        :param S: Liste de liste d'observables
+        :return: La log vraisemblance de S
+        """
         somme = 0
         for w in S:
             somme += np.log(self.pfw(w))
@@ -506,25 +578,28 @@ class HMM:
 
     @staticmethod
     def num_to_lettre(n):
-        '''convertir un numero en lettre'''
+        """
+        :param n: Entier
+        :return: La lettre de l'alphabet correspondant à n
+        """
         if type(n) != int:
             raise TypeError('le numero doit etre un entier')
         if n < 0 or n > 25:
             raise ValueError('le numero doit etre compris entre 0 et 25')
-
         alphabet =['a','b','c','d','e','f','g','h','i','j','k','l','m','n','o','p','q','r','s','t','u','v','w','x','y','z']
-
         return alphabet[n]
 
 
     @staticmethod
     def lettre_to_num(lettre):
-        '''convertir une lettre en numero'''
+        """
+        :param lettre: Lettre de l'alphabet
+        :return: L'indice de la lettre
+        """
         alphabet = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't',
                     'u', 'v', 'w', 'x', 'y', 'z']
         if type(lettre) != str:
             raise TypeError('la lettre doit etre un caractere')
         if lettre not in alphabet:
             raise ValueError('la lettre doit etre dans l\'alphabet' )
-
         return alphabet.index(lettre)
