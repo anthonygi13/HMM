@@ -11,36 +11,6 @@ import time
 import copy
 
 
-def list_rand_sum_2_dim(n, m): # Crée un numpy aléatoire de dim n*m avec somme =1 sur toutes les lignes
-    """
-    :param n: nombre de lignes
-    :param m: nombre de colonnes
-    :return: un numpy aléatoire de dim n*m avec somme =1 sur toutes les lignes
-    """
-    if type(n) != int:
-        raise ValueError('le nombre de lettre doit etre un entier')
-    if type(m) != int:
-        raise ValueError('le nombre etat doit etre un entier')
-    L = np.zeros((n, m-1))
-    for j in range(n): # j colonne
-        for i in range(m-1): # i sur la ligne
-            s = random.random()
-            s = "%.3f" % s
-            L[j, i] = (s)
-    for i in range(n):
-        L.sort()
-    M = np.zeros((n, m))
-    for i in range(n): # Pour chaque ligne
-        for j in range(0, m): # Pour chaque colonne
-            if j == m-1:
-                M[i, j] = 1 - L[i, j-1]
-            elif j == 0:
-                M[i, j] = L[i, j]
-            else :
-                M[i,j] = L[i, j] - L[i, j-1]
-    return M
-
-
 class HMM:
     # Défint un HMM
 
@@ -160,6 +130,14 @@ class HMM:
         :param nb_colonnes: Nombre de colonnes attendues
         :return: Renvoie une erreur si les dimensions du tableau ne sont pas celles attendues
         """
+        if type(nb_lignes) != int:
+            raise TypeError('nb_lignes doit etre un entier')
+        if type(nb_colonnes) != int:
+            raise TypeError('nb_colonnes doit etre un entier')
+        if nb_lignes < 0:
+            raise ValueError("nb_lignes doit être positif")
+        if nb_colonnes < 0:
+            raise ValueError("nb_colonnes doit être positif")
         if tableau.ndim != 2:
             raise ValueError("The parameter tableau should be a 2D array")
         if tableau.shape[0] != nb_lignes or tableau.shape[1] != nb_colonnes:
@@ -172,8 +150,6 @@ class HMM:
         :return: Renvoie une erreur si w n'est pas un tuple ou s'il contient des éléments qui ne sont pas des observables
         """
         if type(w) != tuple:
-            print(w)
-            print(type(w))
             raise TypeError("w doit etre un tuple")
 
         if len(w) == 0:
@@ -202,6 +178,11 @@ class HMM:
         :param adr: Nom d"un fichier texte contenant les données d'un HMM
         :return: Un HMM
         """
+        if type(adr) != str:
+            raise TypeError("adr doit être une chaîne de caractères")
+        if adr == "":
+            raise ValueError("adr ne doit pas être une chaîne de caractères vide")
+
         data = open(adr, 'r')
         line = data.readline()
         hash_count = 0
@@ -249,6 +230,8 @@ class HMM:
         :param array: Tableau de probabilités dont la somme des vleurs vaut 1
         :return: Un indice du tableau avec une probabilité égale à la valeur correspondant à l'indice
         """
+        if not isinstance(array, np.ndarray):
+            raise TypeError("The parameter array should be a np.ndarray")
         if array.ndim != 1:
             raise ValueError("The parameter array should be a 1D array")
         HMM.check_probability_array(array)
@@ -285,6 +268,11 @@ class HMM:
         :param address: Nom du fichier
         :return: HMM sous fichier texte nommé par address
         """
+        if type(address) != str:
+            raise TypeError("adr doit être une chaîne de caractères")
+        if address == "":
+            raise ValueError("adr ne doit pas être une chaîne de caractères vide")
+
         nfile = open(address, "w")
         nfile.write("# The number of letters\n")
         nfile.write(str(self.letters_number) + "\n")
@@ -308,6 +296,8 @@ class HMM:
 
     def __eq__(self, hmm2):
         # Définition de l'égalité entre 2 HMM
+        if not isinstance(hmm2, HMM):
+            raise TypeError("ne peut pas verifier une egalité entre un HMM et un objet qui n'est pas un HMM")
         if self.letters_number != hmm2.letters_number:
             return False
         if self.states_number != hmm2.states_number:
@@ -477,7 +467,7 @@ class HMM:
         self.initial = pi / pi.sum()
 
     @staticmethod
-    def bw2(self, nbS, nbL, S, N):
+    def bw2(nbS, nbL, S, N):
         """
         :param nbS: Nombre d'états
         :param nbL: Nombre de sommets
@@ -486,6 +476,8 @@ class HMM:
         :return: Un HMM généré aléatoirement à nbS états et nbL sommets mis à jour N fois grâce à bw1 pour augmenter
         la vraisemblance
         """
+        if type(N) != int or N < 0:
+            raise ValueError("N doit être un entier positif")
         hmm = HMM.gen_HMM(nbL, nbS)
         for i in range (N):
             hmm.bw1(S)
@@ -502,6 +494,8 @@ class HMM:
         :param M: Entier
         :return: Le HHMi avec 0 <= i <= M-1 qui maximise la vraisemblance de S
         """
+        if type(M) != int or M < 0:
+            raise ValueError("M doit être un entier positif")
         max_logV = 0
         hmm = None
         for i in range (M):
@@ -517,12 +511,18 @@ class HMM:
     def bw2_variante(nbS, nbL, S, limite, N=None):
         # Même fonction que bw2 mais s'arrête automatiquement lorsque la log vraisemblance entre deux mises à jour
         # successives est inférieure au paramètre limite
+
+        if N is not None and (type(N) != int or N < 0):
+            raise ValueError("N doit être None ou un entier positif")
+        if type(limite) != int and type(limite) != float or limite < 0:
+            raise ValueError("le paramêtre limite doit être un nombre positif")
+
         hmm = HMM.gen_HMM(nbL, nbS)
         logV = hmm.logV(S)
         compteur = 0
         c = 0
         while compteur <= 10:
-            if c != N :
+            if N is not None and c != N :
                 break
             hmm.bw1(S)
             logV_new = hmm.logV(S)
@@ -539,6 +539,8 @@ class HMM:
     def bw3_variante(nbS, nbL, S, M, limite, N=None):
         # Même fonction que bw3 mais s'arrête automatiquement lorsque la log vraisemblance entre deux mises à jour
         # successives est inférieure au paramètre limite
+        if type(M) != int or M < 0:
+            raise ValueError("M doit être un entier positif")
         max_logV = 0
         hmm = None
         for i in range(M):
@@ -557,12 +559,12 @@ class HMM:
         :param nbr_etat: Nombre souhaité d'états
         :return: un HMM généré aléatoirement avec nb_lettre observables et nb_ etats états
         """
-        letters_number = nbr_lettre
-        states_number = nbr_etat
-        initial = list_rand_sum_2_dim(1, nbr_etat)
-        transitions = list_rand_sum_2_dim(nbr_etat, nbr_etat)
-        emissions = list_rand_sum_2_dim(nbr_etat, nbr_lettre)
-        return HMM(letters_number, states_number, initial[0], transitions, emissions)
+
+        initial = HMM.list_rand_sum_2_dim(1, nbr_etat)
+        transitions = HMM.list_rand_sum_2_dim(nbr_etat, nbr_etat)
+        emissions = HMM.list_rand_sum_2_dim(nbr_etat, nbr_lettre)
+
+        return HMM(nbr_lettre, nbr_etat, initial[0], transitions, emissions)
 
 
     def logV(self, S):
@@ -572,6 +574,7 @@ class HMM:
         """
         somme = 0
         for w in S:
+            self.check_w(w)
             somme += np.log(self.pfw(w))
         return somme
 
@@ -603,3 +606,40 @@ class HMM:
         if lettre not in alphabet:
             raise ValueError('la lettre doit etre dans l\'alphabet' )
         return alphabet.index(lettre)
+
+
+    @staticmethod
+    def list_rand_sum_2_dim(n, m):
+        '''creer un array numpy en 2D aléatoire de dim n*m avec somme des valeurs = 1 sur toutes les lignes'''
+        if type(n) != int:
+            raise TypeError('n doit etre un entier')
+        if type(m) != int:
+            raise TypeError('m doit etre un entier')
+        if n < 0:
+            raise ValueError("n doit être positif")
+        if m < 0:
+            raise ValueError("m doit être positif")
+
+        L = np.zeros((n, m - 1))
+
+        for j in range(n):  # j colonne
+            for i in range(m - 1):  # i sur la ligne
+                s = random.random()
+                s = "%.3f" % s
+                L[j, i] = (s)
+
+        for i in range(n):
+            L.sort()
+
+        M = np.zeros((n, m))
+
+        for i in range(n):  # pour chaque ligne
+            for j in range(0, m):  # pour chaque colonne
+                if j == m - 1:
+                    M[i, j] = 1 - L[i, j - 1]
+                elif j == 0:
+                    M[i, j] = L[i, j]
+                else:
+                    M[i, j] = L[i, j] - L[i, j - 1]
+
+        return M

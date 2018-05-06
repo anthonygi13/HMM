@@ -120,7 +120,7 @@ class TestHMM(unittest.TestCase):
                 self.assertEqual(1, x)
 
     def test_list_len1(self):
-        L = list_rand_sum_2_dim(2,5)
+        L = HMM.list_rand_sum_2_dim(2,5)
         sum = 0
         for i in range(5):
             sum += float(L[0, i])
@@ -133,7 +133,7 @@ class TestHMM(unittest.TestCase):
         self.assertTrue(np.isclose([sum], [1]))
 
     def test_list_len2(self):
-        L = list_rand_sum_2_dim(3,5)
+        L = HMM.list_rand_sum_2_dim(3,5)
         sum = 0
         for i in range(5):
             sum += float(L[0, i])
