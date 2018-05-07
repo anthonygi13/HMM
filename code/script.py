@@ -17,13 +17,6 @@ def entree():
             print("Oups ! Vous devez entrer un nombre entier strictement positif, essayez encore...")
     return x
 
-def verif_entree(entree, texte):
-    while entree - int(entree) != 0 or entree <= 0:
-        print ()
-        print ("Vous devez entrer un entier strictement positif")
-        print ()
-        entree = float(input(texte))
-    return entree
 
 listeBW = []
 input("Bonjour. Vous allez découvrir le code réalisé par la Communauté de l\'info pour le projet HMM. Pour continuer appuyez sur entrée.")
@@ -86,7 +79,6 @@ var = input("Voulez vous sauvergarder cet HMM (o/n)?")
 if var =='o':
     name=input('Entrez le nom du fichier : ')
     h.save(name)
-else:
-    print("Merci d'avoir utilisé notre programme !")
+print("Merci d'avoir utiliser notre programme !")
 
 # bw, save
