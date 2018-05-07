@@ -75,9 +75,25 @@ print (h)
 print()
 print("La vraisemblance de l'échantillon", listeBW, "est désormais de", h.logV(listeBW))
 
-var = input("Voulez vous sauvergarder cet HMM (o/n) ?")
-if var =='o':
-    name=input('Entrez le nom du fichier : ')
-    h.save(name)
-print("Merci d'avoir utilisé notre programme !")
+while True:
+    try:
+        print()
+        reponse = input("Voulez vous enregistrer le nouveau HMM dans un fichier texte (o/n) ? ")
+        if reponse not in ["o", "n"]:
+            raise ValueError
+        break
+    except:
+        print("Veuillez entrer une réponse valide...")
 
+if reponse == "o":
+    while True:
+        try:
+            print()
+            chemin = input('Entrez le chemin du fichier de sortie : ')
+            h.save(chemin)
+            break
+        except:
+            print("Le chemin n'est pas valide, essayez encore...")
+
+print()
+print("Merci d'avoir utilisé notre programme !")
