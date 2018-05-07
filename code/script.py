@@ -42,7 +42,7 @@ while var == 'o':
     print()
 
     w = h.generate_random(n)
-    print("Le mot de", n, "lettre qui a été généré aléatoirement est", w)
+    print("Le mot de", n, "lettres qui a été généré aléatoirement est", w)
     listeBW += [w]
     print("La probabilité que ce mot soit généré était de", h.pfw(w), ", soit une log-vraisemblance de", h.logV([w]))
     chemin, p = h.viterbi(w)
