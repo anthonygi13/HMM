@@ -57,6 +57,7 @@ nb = int(nb)
 
 for i in range (nb):
     h.bw1(listeBW)
+    print(i+1, ": La vraisemblance de l'échantillon", listeBW, "est de", h.logV(listeBW))
 
 print()
 print ("Le nouveau HMM dont la vraisemblance a été augmentée", nb, "fois est le suivant :")
