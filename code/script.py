@@ -50,6 +50,7 @@ while var == 'o':
         var = input("Voulez-vous générer une autre séquence afin d'utiliser Baum Welch ? o/n")
     print ()
 
+print("La vraisemblance de l'échantillon", listeBW, "est de", h.logV(listeBW))
 nb = float(input("Combien de fois voulez-vous effectuer Baum Welch ?"))
 nb = verif_entree(nb,"Combien de fois voulez-vous effectuer Baum Welch ?" )
 nb = int(nb)
@@ -61,6 +62,7 @@ print()
 print ("Le nouveau HMM dont la vraisemblance a été augmentée", nb, "fois est le suivant :")
 print ()
 print (h)
+print("La vraisemblance de l'échantillon", listeBW, "est désormais de", h.logV(listeBW))
 
 
 # bw, save
