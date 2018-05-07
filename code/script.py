@@ -12,7 +12,7 @@ def verif_entree(entree, texte):
         print ()
         print ("Vous devez entrer un entier strictement positif")
         print ()
-        n = float(input(texte))
+        entree = float(input(texte))
     return entree
 
 listeBW = []
