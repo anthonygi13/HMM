@@ -65,5 +65,11 @@ print ()
 print (h)
 print("La vraisemblance de l'échantillon", listeBW, "est désormais de", h.logV(listeBW))
 
+var = input("Voulez vous sauvergarder cet HMM o/n?")
+if var =='o':
+    name=input('Entrez le nom du fichier : ')
+    h.save(name)
+else:
+    print("Merci d'avoir utiliser notre programme !")
 
 # bw, save
