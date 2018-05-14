@@ -449,7 +449,7 @@ class HMM:
         O = np.zeros((self.states_number, self.letters_number))
         for j in range(len(S)):
             gamma = self.gamma(S[j])
-            for t in range(len(S[j])):
+            for t in range(len(S[j])): # y a pas moyen de virer une boucle là ?
                 O[:, S[j][t]] += gamma[:, t]
         self.transitions = (T.T / T.sum(1)).T
         self.emissions = (O.T / O.sum(1)).T
