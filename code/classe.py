@@ -444,8 +444,7 @@ class HMM:
             pi += np.array(self.gamma(S[j])[:, 0])
         T = np.zeros((self.states_number, self.states_number))
         for j in range(len(S)):
-            for t in range(len(S[j]) - 1): # boucle
-                T += self.xi(S[j])[:, :, t]
+            T += np.einsum('klt->kl', self.xi(S[j]))
         O = np.zeros((self.states_number, self.letters_number))
         for j in range(len(S)):
             gamma = self.gamma(S[j])
