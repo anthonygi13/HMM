@@ -399,6 +399,7 @@ class HMM:
         """
         f = self.f(w)
         b = self.b(w)
+        print("np.einsum('kt,kt->t', b, f)", np.einsum('kt,kt->t', b, f))
         return (f * b) / np.einsum('kt,kt->t', b, f)
 
     def xi(self, w):
@@ -413,6 +414,7 @@ class HMM:
         v = np.einsum('kt,kl,lt,lt->t', f, self.transitions, emissions, b)
         somme = np.tile(v, (self.states_number, self.states_number, 1))
         xi = xi / somme
+        print("xi", xi)
         return xi
 
     def xi2(self, w):
@@ -448,6 +450,7 @@ class HMM:
             gamma = self.gamma(S[j])
             for t in range(len(S[j])): # y a pas moyen de virer une boucle là ?
                 O[:, S[j][t]] += gamma[:, t]
+        print(T)
         self.transitions = (T.T / T.sum(1)).T
         self.emissions = (O.T / O.sum(1)).T
         self.initial = pi / pi.sum()
@@ -485,7 +488,7 @@ class HMM:
         hmm = None
         for i in range(M):
             h = HMM.bw2(nbS, nbL, S, N)
-            logV = hmm.logV(S)
+            logV = h.logV(S)
             if max_logV < logV:
                 max_logV = logV
                 hmm = h
