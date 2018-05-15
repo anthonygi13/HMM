@@ -399,6 +399,9 @@ class HMM:
         """
         f = self.f(w)
         b = self.b(w)
+        print("w", w)
+        print("b", b)
+        print("f", f)
         print("np.einsum('kt,kt->t', b, f)", np.einsum('kt,kt->t', b, f))
         return (f * b) / np.einsum('kt,kt->t', b, f)
 
@@ -414,7 +417,6 @@ class HMM:
         v = np.einsum('kt,kl,lt,lt->t', f, self.transitions, emissions, b)
         somme = np.tile(v, (self.states_number, self.states_number, 1))
         xi = xi / somme
-        print("xi", xi)
         return xi
 
     def xi2(self, w):
@@ -445,12 +447,13 @@ class HMM:
         T = np.zeros((self.states_number, self.states_number))
         O = np.zeros((self.states_number, self.letters_number))
         for j in range(len(S)):
-            pi += np.array(self.gamma(S[j])[:, 0])
-            T += np.einsum('klt->kl', self.xi(S[j]))
             gamma = self.gamma(S[j])
-            for t in range(len(S[j])): # y a pas moyen de virer une boucle là ?
+            xi = self.xi(S[j])
+            pi += np.array(gamma[:, 0])
+            t = np.einsum('klt->kl', self.xi(S[j]))
+            T += t
+            for t in range(len(S[j])):
                 O[:, S[j][t]] += gamma[:, t]
-        print(T)
         self.transitions = (T.T / T.sum(1)).T
         self.emissions = (O.T / O.sum(1)).T
         self.initial = pi / pi.sum()
@@ -461,7 +464,7 @@ class HMM:
         :param nbS: Nombre d'états
         :param nbL: Nombre de sommets
         :param S: Liste de tuple d'observables
-        :param N: Entier
+        :param N: nombre d iteration
         :return: Un HMM généré aléatoirement à nbS états et nbL sommets mis à jour N fois grâce à bw1 pour augmenter
         la vraisemblance
         """
@@ -478,8 +481,8 @@ class HMM:
         :param nbS: Nombre d'états
         :param nbL: Nombre de sommets
         :param S: Liste de tuple d'observables
-        :param N: Entier
-        :param M: Entier
+        :param N: nombre d iterations
+        :param M: nombre d initialisation differentes
         :return: Le HHMi avec 0 <= i <= M-1 qui maximise la vraisemblance de S
         """
         if type(M) != int or M < 0:
@@ -566,7 +569,7 @@ class HMM:
     @staticmethod
     def num_to_lettre(n):
         """
-        :param n: Entier
+        :param n: Entier entre 0 et 25
         :return: La lettre de l'alphabet correspondant à n
         """
         if type(n) != int:
