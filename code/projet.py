@@ -1,3 +1,4 @@
+<<<<<<< Updated upstream
 
 from classe import *
 import numpy as np
