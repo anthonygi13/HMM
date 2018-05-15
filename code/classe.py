@@ -440,13 +440,11 @@ class HMM:
         for w in S:
             self.check_w(w)
         pi = np.zeros(self.states_number)
-        for j in range(len(S)):
-            pi += np.array(self.gamma(S[j])[:, 0])
         T = np.zeros((self.states_number, self.states_number))
-        for j in range(len(S)):
-            T += np.einsum('klt->kl', self.xi(S[j]))
         O = np.zeros((self.states_number, self.letters_number))
         for j in range(len(S)):
+            pi += np.array(self.gamma(S[j])[:, 0])
+            T += np.einsum('klt->kl', self.xi(S[j]))
             gamma = self.gamma(S[j])
             for t in range(len(S[j])): # y a pas moyen de virer une boucle là ?
                 O[:, S[j][t]] += gamma[:, t]
