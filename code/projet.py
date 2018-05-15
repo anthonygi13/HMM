@@ -15,7 +15,8 @@ def text_to_list(adr):
         for i in range (len(w)):
             w2 += (HMM.lettre_to_num(w[i]),)
         L2 += [w2]
-    return L2
+    return L2[:-1]
+
 
 def xval(nbFolds, S, nbL, nbSMin, nbSMax, nbIter, nbInit):
     n = len(S)
@@ -29,12 +30,15 @@ def xval(nbFolds, S, nbL, nbSMin, nbSMax, nbIter, nbInit):
             learn = [S[l[j]] for j in range(f1)]
             learn += [S[l[j]] for j in range(f2,n)]
             test = [S[l[j]] for j in range(f1,f2)]
-            h = HMM.bw3(nbL,nbS,learn,nbIter,nbInit)
+            h = HMM.bw3(nbS,nbL,learn,nbIter,nbInit)
         lv += h.logV(test)
         if lv > lvOpt:
             lvOpt = lv
             nbSOpt = nbS
     return lvOpt,nbSOpt
+
+L = text_to_list('anglais2000')
+print('toc',xval(20, L, 26, 2, 10, 5, 10))
 
 '''''''''''''''
 y = []
