@@ -1,5 +1,3 @@
-<<<<<<< Updated upstream
-
 from classe import *
 import numpy as np
 import matplotlib.pyplot as plt
