@@ -1,3 +1,9 @@
+###########################
+# Fichier projet.py       #
+# 16/05/18                #
+# La communauté de l'info #
+###########################
+
 from classe import *
 import numpy as np
 import matplotlib.pyplot as plt
