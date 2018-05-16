@@ -34,13 +34,13 @@ def xval(nbFolds, S, nbL, nbSMin, nbSMax, nbIter, nbInit):
             learn += [S[l[j]] for j in range(f2,n)]
             test = [S[l[j]] for j in range(f1,f2)]
             h = HMM.bw3(nbS, nbL, learn, nbIter, nbInit)
-            lv += h.logV(test) # c bien ici on est d accord ?
+        lv += h.logV(test) # c bien ici on est d accord ?
         if lv > lvOpt:
             lvOpt = lv
             nbSOpt = nbS
     return lvOpt,nbSOpt
 
-def logV_vs_nb_iteration_bw1(nb_iter_max, nbS, S, nbL=25): # trace la log vraisemblance en fonction du nombre d'itération de bw1
+def logV_vs_nb_iteration_bw1(nb_iter_max, nbS, S, nbL=26): # trace la log vraisemblance en fonction du nombre d'itération de bw1
     """
     :param nb_iter_max: nombre d'itérations de bw1 à réaliser
     :param nbS: nb d'états
@@ -52,16 +52,23 @@ def logV_vs_nb_iteration_bw1(nb_iter_max, nbS, S, nbL=25): # trace la log vraise
     nb_iter = [0]
     logV = [hmm.logV(S)]
     for i in range(1, nb_iter_max + 1):
+        print(i)
         try:
             hmm.bw1(S)
             nb_iter.append(i)
             logV.append(hmm.logV(S))
         except KeyboardInterrupt:
             break
-    plt.plot(nb_iter, logV)
+    plt.plot(nb_iter, logV, '.', c='blue', label='logV vs nb iteration bw1')
+    plt.xlabel('nb d\'iteration')
+    plt.ylabel('logV')
+    titre = 'anglais2000' + ' / nombre d\'etat = ' + str(nbS)
+    plt.title(titre)
+    plt.legend()
+
     plt.show()
 
-def logV_vs_intialisation(nb_init_max, nb_iter, nbS, S, nbL=25): # trace la logvraisemblance optimale en fonction de différentes initialisations
+def logV_vs_intialisation(nb_init_max, nb_iter, nbS, S, nbL=26): # trace la logvraisemblance optimale en fonction de différentes initialisations
     """
     :param nb_init_max: nombre d'initialisations différentes à réaliser
     :param nb_iter: nombre d'itération dans bw2
@@ -83,7 +90,7 @@ def logV_vs_intialisation(nb_init_max, nb_iter, nbS, S, nbL=25): # trace la logv
     plt.show()
 
 
-def logV_vs_initialisation_variante(nb_init_max, limite, nbS, S, nbL=25): # trace la logvraisemblance optimale en fonction de différentes initialisations
+def logV_vs_initialisation_variante(nb_init_max, limite, nbS, S, nbL=26): # trace la logvraisemblance optimale en fonction de différentes initialisations
     """
     :param nb_init_max: nombre d'initialisations différentes à réaliser
     :param limite: limite pour bw2_variante
@@ -105,7 +112,7 @@ def logV_vs_initialisation_variante(nb_init_max, limite, nbS, S, nbL=25): # trac
     plt.show()
 
 
-def efficiency_vs_nb_state(nbFolds, S, nbSMin, nbSMax, nbIter, nbInit, nbL=25):  # trace la log vraisemblance moyenne sur les echantillons tests en fonction du nombre d'état
+def efficiency_vs_nb_state(nbFolds, S, nbSMin, nbSMax, nbIter, nbInit, nbL=26):  # trace la log vraisemblance moyenne sur les echantillons tests en fonction du nombre d'état
     """
     :param nbFolds: cardinal de la partition de S
     :param S: liste de mots sur laquelle on entraine notre HMM
@@ -140,7 +147,7 @@ def efficiency_vs_nb_state(nbFolds, S, nbSMin, nbSMax, nbIter, nbInit, nbL=25): 
 
 
 def efficiency_vs_nb_state_variante(nbFolds, S, nbSMin, nbSMax, limite, nbInit,
-                           nbL=25):  # trace la log vraisemblance moyenne sur les echantillons tests en fonction du nombre d'état
+                           nbL=26):  # trace la log vraisemblance moyenne sur les echantillons tests en fonction du nombre d'état
     """
     :param nbFolds: cardinal de la partition de S
     :param S: liste de mots sur laquelle on entraine notre HMM
@@ -173,11 +180,12 @@ def efficiency_vs_nb_state_variante(nbFolds, S, nbSMin, nbSMax, limite, nbInit,
     plt.plot(nb_state, logV)
     plt.show()
 
+''''
 # a debug : parfois y a des nan pck dans xi y a division par un vecteur nul
 L = text_to_list('anglais2000')
 print('toc',xval(20, L, 26, 2, 10, 5, 10))
 
-'''''''''''''''
+
 y = []
 x = []
 for n in range (2,100000000):
@@ -193,4 +201,6 @@ plt.plot(x, y)
 plt.show()
 
 '''''''''''''''''
+
+logV_vs_nb_iteration_bw1(10000, 30, text_to_list('anglais2000'))
 

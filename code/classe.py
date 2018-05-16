@@ -399,10 +399,6 @@ class HMM:
         """
         f = self.f(w)
         b = self.b(w)
-        print("w", w)
-        print("b", b)
-        print("f", f)
-        print("np.einsum('kt,kt->t', b, f)", np.einsum('kt,kt->t', b, f))
         return (f * b) / np.einsum('kt,kt->t', b, f)
 
     def xi(self, w):
