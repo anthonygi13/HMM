@@ -9,6 +9,7 @@ import numpy as np
 import random
 import time
 import copy
+from math import inf
 
 
 class HMM:
@@ -485,10 +486,9 @@ class HMM:
         """
         if type(M) != int or M < 0:
             raise ValueError("M doit être un entier positif")
-        max_logV = 0
+        max_logV = -inf
         hmm = None
         for i in range(M):
-            print(i)
             h = HMM.bw2(nbS, nbL, S, N)
             logV = h.logV(S)
             if max_logV < logV:
@@ -530,11 +530,11 @@ class HMM:
         # successives est inférieure au paramètre limite
         if type(M) != int or M < 0:
             raise ValueError("M doit être un entier positif")
-        max_logV = 0
+        max_logV = -inf
         hmm = None
         for i in range(M):
             h = HMM.bw2_variante(nbS, nbL, S, limite, N)
-            logV = hmm.logV(S)
+            logV = h.logV(S)
             if max_logV < logV:
                 max_logV = logV
                 hmm = h
