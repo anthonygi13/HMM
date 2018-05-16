@@ -189,7 +189,9 @@ def efficiency_vs_nb_state_variante(nbFolds, S, nbSMin, nbSMax, limite, nbInit,
 ''''
 # a debug : parfois y a des nan pck dans xi y a division par un vecteur nul
 L = text_to_list('anglais2000')
-print('toc',xval(20, L, 26, 2, 10, 5, 10))
+print('toc',xval(10, L, 26, 2, 10, 5, 10))
+
+
 
 
 y = []

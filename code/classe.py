@@ -158,6 +158,8 @@ class HMM:
             if type(x) != int:
                 raise TypeError('Les lettres d\'un mot doivent etre des entiers')
             if x >= self.letters_number:
+                print('x',x)
+                print(self.letters_number)
                 raise ValueError("Tous les éléments doivent appartenir aux observables")
 
     @transitions.setter
@@ -486,6 +488,7 @@ class HMM:
         max_logV = 0
         hmm = None
         for i in range(M):
+            print(i)
             h = HMM.bw2(nbS, nbL, S, N)
             logV = h.logV(S)
             if max_logV < logV:
@@ -601,6 +604,9 @@ class HMM:
             raise ValueError("n doit être positif")
         if m < 0:
             raise ValueError("m doit être positif")
+
+        if m == 1:
+            return np.array([[1] * n]) ####################### a verifier ###########################
 
         L = np.zeros((n, m - 1))
 
