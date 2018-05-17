@@ -468,7 +468,5 @@ def text_to_list(adr): # transforme un document texte contenant des mot en liste
 
 
 
-
-
 L = text_to_list('anglais2000')
 print('toc',xval(20, L, 26, 2, 10, 5, 10))

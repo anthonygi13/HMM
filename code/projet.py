@@ -164,6 +164,7 @@ def efficiency_vs_nb_state(nbFolds, S, nbSMin, nbSMax, nbIter, nbInit, nbL=26): 
             logV.append(lv / nbFolds)
             print("logV", lv/nbFolds)
             nb_state.append(nbS)
+            print("logV", logV[-1])
         except KeyboardInterrupt:
             break
     plt.plot(nb_state, logV)
@@ -219,17 +220,6 @@ def efficiency_vs_nb_state_variante(nbFolds, S, nbSMin, nbSMax, limite, nbInit,
 
 #logV_vs_nb_iteration_bw1(1000, 45, text_to_list('anglais2000'))
 
-
-
-#HMM.bw3(45, 26, text_to_list('anglais2000'), 200, 20).save("hmm_anglais_v2")
-
-
-"""
-h = HMM.load("hmm_anglais")
-
-print(h.logV(text_to_list('anglais2000')))
-
-for i in range(1000000):
-    n = random.randint(3, 8)
-    print(h.gen_mot_lettres(n))
-"""
+S = text_to_list('anglais2000')
+#logV_vs_nb_iteration_bw1(10000, 30, text_to_list('anglais2000'))
+efficiency_vs_nb_state(10, S, 100, 1000, 100, 1)
