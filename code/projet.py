@@ -7,6 +7,8 @@
 from classe import *
 import numpy as np
 import matplotlib.pyplot as plt
+import scipy.optimize as opt
+import random
 
 
 def text_to_list(adr): # transforme un document texte contenant des mot en liste de mots compréhensibles par le HMM
@@ -31,7 +33,8 @@ def xval(nbFolds, S, nbL, nbSMin, nbSMax, nbIter, nbInit):
     n = len(S)
     l = np.random.permutation(n)
     lvOpt = -float("inf")
-    for nbS in range(nbSMin, nbSMax):
+    for nbS in range(nbSMin, nbSMax + 1):
+        print(nbS)
         lv = 0
         for i in range(1,nbFolds+1):
             f1 = int((i-1)*n/nbFolds)
@@ -40,11 +43,15 @@ def xval(nbFolds, S, nbL, nbSMin, nbSMax, nbIter, nbInit):
             learn += [S[l[j]] for j in range(f2,n)]
             test = [S[l[j]] for j in range(f1,f2)]
             h = HMM.bw3(nbS, nbL, learn, nbIter, nbInit)
-        lv += h.logV(test) # c bien ici on est d accord ?
+            lv += h.logV(test)
         if lv > lvOpt:
             lvOpt = lv
             nbSOpt = nbS
-    return lvOpt,nbSOpt
+    return lvOpt, nbSOpt
+
+
+def func(x, a, b, c): #fonction utilisée pour le fitting de certaines courbes
+    return - a * np.exp(-x / b) - 25580 + c
 
 def logV_vs_nb_iteration_bw1(nb_iter_max, nbS, S, nbL=26): # trace la log vraisemblance en fonction du nombre d'itération de bw1
     """
@@ -65,14 +72,23 @@ def logV_vs_nb_iteration_bw1(nb_iter_max, nbS, S, nbL=26): # trace la log vraise
             logV.append(hmm.logV(S))
         except KeyboardInterrupt:
             break
-    plt.plot(nb_iter, logV, '.', c='blue', label='logV vs nb iteration bw1')
+    plt.plot(nb_iter, logV, '.', c='blue', label='logV en fonction du nombre d\'itération de bw1')
     plt.xlabel('nb d\'iteration')
     plt.ylabel('logV')
     titre = 'anglais2000' + ' / nombre d\'etat = ' + str(nbS)
     plt.title(titre)
-    plt.legend()
+    optimizedParameters, pcov = opt.curve_fit(func, nb_iter, logV)
+    print(optimizedParameters)
 
+    print(nb_iter)
+    print(logV)
+
+    # Use the optimized parameters to plot the best fit
+    plt.plot(nb_iter, [func(x, optimizedParameters[0], optimizedParameters[1], optimizedParameters[2]) for x in nb_iter], label='-' + str(optimizedParameters[0]) + 'exp(-x/' + str(optimizedParameters[1]) + ') + ' + str(-25580 + optimizedParameters[2]))
+
+    plt.legend()
     plt.show()
+
 
 def logV_vs_intialisation(nb_init_max, nb_iter, nbS, S, nbL=26): # trace la logvraisemblance optimale en fonction de différentes initialisations
     """
@@ -133,7 +149,8 @@ def efficiency_vs_nb_state(nbFolds, S, nbSMin, nbSMax, nbIter, nbInit, nbL=26): 
     l = np.random.permutation(n)
     nb_state = []
     logV = []
-    for nbS in range(nbSMin, nbSMax):
+    for nbS in range(nbSMin, nbSMax + 1):
+        print(nbS)
         try:
             lv = 0
             for i in range(1, nbFolds + 1):
@@ -145,6 +162,7 @@ def efficiency_vs_nb_state(nbFolds, S, nbSMin, nbSMax, nbIter, nbInit, nbL=26): 
                 h = HMM.bw3(nbS, nbL, learn, nbIter, nbInit)
                 lv += h.logV(test)
             logV.append(lv / nbFolds)
+            print("logV", lv/nbFolds)
             nb_state.append(nbS)
         except KeyboardInterrupt:
             break
@@ -168,7 +186,8 @@ def efficiency_vs_nb_state_variante(nbFolds, S, nbSMin, nbSMax, limite, nbInit,
     l = np.random.permutation(n)
     nb_state = []
     logV = []
-    for nbS in range(nbSMin, nbSMax):
+    for nbS in range(nbSMin, nbSMax + 1):
+        print(nbS)
         try:
             lv = 0
             for i in range(1, nbFolds + 1):
@@ -177,38 +196,40 @@ def efficiency_vs_nb_state_variante(nbFolds, S, nbSMin, nbSMax, limite, nbInit,
                 learn = [S[l[j]] for j in range(f1)]
                 learn += [S[l[j]] for j in range(f2, n)]
                 test = [S[l[j]] for j in range(f1, f2)]
-                h = HMM.bw3_variante(nbS, nbL, learn, limite, nbInit)
+                h = HMM.bw3_variante(nbS, nbL, learn, nbInit, limite)
                 lv += h.logV(test)
             logV.append(lv / nbFolds)
+            print("logV", lv / nbFolds)
             nb_state.append(nbS)
         except KeyboardInterrupt:
             break
     plt.plot(nb_state, logV)
     plt.show()
 
-''''
-# a debug : parfois y a des nan pck dans xi y a division par un vecteur nul
-L = text_to_list('anglais2000')
-print('toc',xval(10, L, 26, 2, 10, 5, 10))
+#L = text_to_list('anglais2000')
+#print('toc', xval(20, L, 26, 2, 10, 5, 5))
+
+#logV_vs_nb_iteration_bw1(1000, 30, text_to_list('anglais2000'))
+
+
+#efficiency_vs_nb_state(10, text_to_list('anglais2000'), 53, 1000, 100, 1)
+
+#efficiency_vs_nb_state(10, text_to_list('allemand2000'), 2, 1000, 100, 1)
+
+
+#logV_vs_nb_iteration_bw1(1000, 45, text_to_list('anglais2000'))
 
 
 
+#HMM.bw3(45, 26, text_to_list('anglais2000'), 200, 20).save("hmm_anglais_v2")
 
-y = []
-x = []
-for n in range (2,100000000):
-    try:
-        h = HMM.bw2_variante(n, 26, S2 , 1)
-        y.append(h.logV(S2))
-        x.append(n)
-        print(y[-1])
-    except KeyboardInterrupt:
-        break
 
-plt.plot(x, y)
-plt.show()
+"""
+h = HMM.load("hmm_anglais")
 
-'''''''''''''''''
+print(h.logV(text_to_list('anglais2000')))
 
-logV_vs_nb_iteration_bw1(10000, 30, text_to_list('anglais2000'))
-
+for i in range(1000000):
+    n = random.randint(3, 8)
+    print(h.gen_mot_lettres(n))
+"""

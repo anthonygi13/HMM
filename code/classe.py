@@ -159,8 +159,6 @@ class HMM:
             if type(x) != int:
                 raise TypeError('Les lettres d\'un mot doivent etre des entiers')
             if x >= self.letters_number:
-                print('x',x)
-                print(self.letters_number)
                 raise ValueError("Tous les éléments doivent appartenir aux observables")
 
     @transitions.setter
@@ -382,6 +380,7 @@ class HMM:
         f[:, 0] = self.initial * self.emissions[:, w[0]]
         for i in range(1, len(w)):
             f[:, i] = np.dot(f[:, i - 1], self.transitions) * self.emissions[:, w[i]]
+
         return f
 
     def b(self, w):
@@ -449,7 +448,7 @@ class HMM:
             gamma = self.gamma(S[j])
             xi = self.xi(S[j])
             pi += np.array(gamma[:, 0])
-            t = np.einsum('klt->kl', self.xi(S[j]))
+            t = np.einsum('klt->kl', xi)
             T += t
             for t in range(len(S[j])):
                 O[:, S[j][t]] += gamma[:, t]
@@ -471,6 +470,7 @@ class HMM:
             raise ValueError("N doit être un entier positif")
         hmm = HMM.gen_HMM(nbL, nbS)
         for i in range(N):
+            print("iter", i)
             hmm.bw1(S)
         return hmm
 
@@ -486,9 +486,10 @@ class HMM:
         """
         if type(M) != int or M < 0:
             raise ValueError("M doit être un entier positif")
-        max_logV = -inf
+        max_logV = -float('inf')
         hmm = None
         for i in range(M):
+            print("init", i)
             h = HMM.bw2(nbS, nbL, S, N)
             logV = h.logV(S)
             if max_logV < logV:
@@ -497,43 +498,35 @@ class HMM:
         return hmm
 
     @staticmethod
-    def bw2_variante(nbS, nbL, S, limite, N=None):
-        # Même fonction que bw2 mais s'arrête automatiquement lorsque la log vraisemblance entre deux mises à jour
-        # successives est inférieure au paramètre limite
+    def bw2_variante(nbS, nbL, S, limite, n=10):
+        # Même fonction que bw2 mais s'arrête automatiquement lorsque la log vraisemblance augmente d'une valeur inférieure
+        # au paramètre limite en N itérations
 
-        if N is not None and (type(N) != int or N < 0):
-            raise ValueError("N doit être None ou un entier positif")
+        if (type(n) != int or n <= 0):
+            raise ValueError("n doit être un entier strictement positif")
         if type(limite) != int and type(limite) != float or limite < 0:
             raise ValueError("le paramêtre limite doit être un nombre positif")
 
         hmm = HMM.gen_HMM(nbL, nbS)
-        logV = hmm.logV(S)
-        compteur = 0
-        c = 0
-        while compteur <= 10:
-            if N is not None and c != N:
-                break
+        res = [None] * (n - 1)
+        res.append(hmm.logV(S))
+        while res[0] is None or res[0] - res[-1] > limite:
             hmm.bw1(S)
-            logV_new = hmm.logV(S)
-            if logV - logV_new < limite:
-                compteur += 1
-            else:
-                compteur = 0
-            logV = logV_new
-            if N is not None:
-                c += 1
+            res.append(hmm.logV(S))
+            del res[0]
         return hmm
 
     @staticmethod
-    def bw3_variante(nbS, nbL, S, M, limite, N=None):
-        # Même fonction que bw3 mais s'arrête automatiquement lorsque la log vraisemblance entre deux mises à jour
-        # successives est inférieure au paramètre limite
+    def bw3_variante(nbS, nbL, S, M, limite, n=10):
+        # Même fonction que bw2 mais s'arrête automatiquement lorsque la log vraisemblance augmente d'une valeur inférieure
+        # au paramètre limite en 10 itérations
+
         if type(M) != int or M < 0:
             raise ValueError("M doit être un entier positif")
-        max_logV = -inf
+        max_logV = -float('inf')
         hmm = None
         for i in range(M):
-            h = HMM.bw2_variante(nbS, nbL, S, limite, N)
+            h = HMM.bw2_variante(nbS, nbL, S, limite, n)
             logV = h.logV(S)
             if max_logV < logV:
                 max_logV = logV
@@ -541,18 +534,33 @@ class HMM:
         return hmm
 
     @staticmethod
-    def gen_HMM(nbr_lettre, nbr_etat):  # faire des checks sur les parametres
-        """
-        :param nbr_lettre: Nombre souhaité s'observables
-        :param nbr_etat: Nombre souhaité d'états
-        :return: un HMM généré aléatoirement avec nb_lettre observables et nb_ etats états
-        """
+    def gen_vect(n):
+        if type(n) != int or n < 0:
+            raise ValueError("M doit être un entier strictement positif")
+        if n == 1:
+            return np.ones(1)
+        else:
+            L = [(i, np.random.random()) for i in range(n - 1)]
+            L = sorted(L, key=lambda x: x[1])
+            v = np.zeros(n)
+            v[L[0][0]] = L[0][1]
+            for i in range(1, n - 1):
+                v[L[i][0]] = L[i][1] - L[i - 1][1]
+            v[n - 1] = 1 - L[n - 2][1]
+        return v
 
-        initial = HMM.list_rand_sum_2_dim(1, nbr_etat)
-        transitions = HMM.list_rand_sum_2_dim(nbr_etat, nbr_etat)
-        emissions = HMM.list_rand_sum_2_dim(nbr_etat, nbr_lettre)
 
-        return HMM(nbr_lettre, nbr_etat, initial[0], transitions, emissions)
+    @staticmethod
+    def gen_HMM(nbL, nbS):
+        initial = HMM.gen_vect(nbS)
+        transitions = np.zeros((nbS, nbS))
+        for i in range(nbS):
+            transitions[i, :] = HMM.gen_vect(nbS)
+        emissions = np.zeros((nbS, nbL))
+        for i in range(nbS):
+            emissions[i, :] = HMM.gen_vect(nbL)
+        return HMM(nbL, nbS, initial, transitions, emissions)
+
 
     def logV(self, S):
         """
@@ -564,6 +572,7 @@ class HMM:
             self.check_w(w)
             somme += np.log(self.pfw(w))
         return somme
+
 
     @staticmethod
     def num_to_lettre(n):
@@ -579,6 +588,7 @@ class HMM:
                     'u', 'v', 'w', 'x', 'y', 'z']
         return alphabet[n]
 
+
     @staticmethod
     def lettre_to_num(lettre):
         """
@@ -593,41 +603,9 @@ class HMM:
             raise ValueError('la lettre doit etre dans l\'alphabet')
         return alphabet.index(lettre)
 
-    @staticmethod
-    def list_rand_sum_2_dim(n, m):
-        '''creer un array numpy en 2D aléatoire de dim n*m avec somme des valeurs = 1 sur toutes les lignes'''
-        if type(n) != int:
-            raise TypeError('n doit etre un entier')
-        if type(m) != int:
-            raise TypeError('m doit etre un entier')
-        if n < 0:
-            raise ValueError("n doit être positif")
-        if m < 0:
-            raise ValueError("m doit être positif")
-
-        if m == 1:
-            return np.array([[1] * n]) ####################### a verifier ###########################
-
-        L = np.zeros((n, m - 1))
-
-        for j in range(n):  # j colonne
-            for i in range(m - 1):  # i sur la ligne
-                s = random.random()
-                s = "%.3f" % s
-                L[j, i] = (s)
-
-        for i in range(n):
-            L.sort()
-
-        M = np.zeros((n, m))
-
-        for i in range(n):  # pour chaque ligne
-            for j in range(0, m):  # pour chaque colonne
-                if j == m - 1:
-                    M[i, j] = 1 - L[i, j - 1]
-                elif j == 0:
-                    M[i, j] = L[i, j]
-                else:
-                    M[i, j] = L[i, j] - L[i, j - 1]
-
-        return M
+    def gen_mot_lettres(self, n):
+        word = self.generate_random(n)
+        mot = ""
+        for l in word:
+            mot += HMM.num_to_lettre(l)
+        return mot
